@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class Film {
@@ -10,6 +10,6 @@ public class Film {
     private final int id;
     private final String name;
     private final String description;
-    private final LocalDateTime releaseDate;
+    private final LocalDate releaseDate;
     private final int duration;
 }

@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ public class FilmController {
         } else if (film.getDuration() < 0) {
             log.debug("Продолжительность фильма должна быть положительной.");
             throw new ValidationException("Продолжительность фильма должна быть положительной.");
-        } else if (film.getReleaseDate().isBefore(LocalDateTime.of(1895,12,28,0,0))) {
+        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
             log.debug("Введен некорректный день рождения");
             throw new ValidationException("Введен некорректный день рождения");
         } else if (film.getId() < 0) {
