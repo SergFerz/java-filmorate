@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public void put(@RequestBody User user) {
+    public User put(@RequestBody User user) {
         if (user.getEmail().isBlank() || user.getEmail() == null) {
             log.debug("В переданных данных отсутствует адрес электронной почты");
             throw new ValidationException("В переданных данных отсутствует адрес электронной почты");
@@ -59,5 +59,6 @@ public class UserController {
             log.debug("Пользователь " + user.getId() + " обновлен.");
             users.put(user.getId(), user);
         }
+        return user;
     }
 }

@@ -26,7 +26,7 @@ public class FilmController {
     }
 
     @PostMapping(value = "/films")
-    public void create(@RequestBody Film film) {
+    public Film create(@RequestBody Film film) {
         if (film == null) {
             log.debug("Введено некорректное значение: null");
             throw new ValidationException("Введено некорректное значение: null");
@@ -49,11 +49,13 @@ public class FilmController {
             log.debug("Добавлен новый фильм");
             films.put(film.getId(), film);
         }
+        return film;
     }
 
     @PutMapping("/films")
-    public void put(@RequestBody Film film) {
+    public Film put(@RequestBody Film film) {
         films.put(film.getId(), film);
         log.debug("Фильм " + film.getName() + " обновлен.");
+        return film;
     }
 }
