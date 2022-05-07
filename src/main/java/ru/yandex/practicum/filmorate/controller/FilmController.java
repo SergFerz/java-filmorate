@@ -27,7 +27,10 @@ public class FilmController {
 
     @PostMapping(value = "/films")
     public void create(@RequestBody Film film) {
-        if (film.getName().isBlank()) {
+        if (film == null) {
+            log.debug("Введено некорректное значение null");
+            throw new ValidationException("Введено некорректное значение null");
+        }else if (film.getName().isBlank()) {
             log.debug("Введено некорректное название фильма");
             throw new ValidationException("Введено некорректное название фильма");
         } else if (film.getDescription().length() > 200) {

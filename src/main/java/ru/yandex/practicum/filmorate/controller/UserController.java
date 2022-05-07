@@ -25,7 +25,10 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public void create(@RequestBody User user) {
-        if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        if (user == null) {
+            log.debug("Введено некорректное значение null");
+            throw new ValidationException("Введено некорректное значение null");
+        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.debug("Введен некорректный адрес электронной почты");
             throw new ValidationException("Введен некорректный адрес электронной почты");
         } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
