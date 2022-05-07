@@ -28,12 +28,12 @@ public class FilmController {
     @PostMapping(value = "/films")
     public void create(@RequestBody Film film) {
         if (film == null) {
-            log.debug("Введено некорректное значение null");
-            throw new ValidationException("Введено некорректное значение null");
+            log.debug("Введено некорректное значение: null");
+            throw new ValidationException("Введено некорректное значение: null");
         }else if (film.getName().isBlank()) {
             log.debug("Введено некорректное название фильма");
             throw new ValidationException("Введено некорректное название фильма");
-        } else if (film.getDescription().length() >= 200) {
+        } else if (film.getDescription().length() > 200) {
             log.debug("Описание не должно превышать 200 символов");
             throw new ValidationException("Описание не должно превышать 200 символов");
         } else if (film.getDuration() < 0) {
