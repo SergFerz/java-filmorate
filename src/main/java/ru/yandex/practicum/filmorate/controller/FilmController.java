@@ -33,7 +33,7 @@ public class FilmController {
         }else if (film.getName().isBlank()) {
             log.debug("Введено некорректное название фильма");
             throw new ValidationException("Введено некорректное название фильма");
-        } else if (film.getDescription().length() > 200) {
+        } else if (film.getDescription().length() >= 200) {
             log.debug("Описание не должно превышать 200 символов");
             throw new ValidationException("Описание не должно превышать 200 символов");
         } else if (film.getDuration() < 0) {
