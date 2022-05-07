@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public void create(@RequestBody User user) {
+    public User create(@RequestBody User user) {
         if (user == null) {
             log.debug("Введено некорректное значение null");
             throw new ValidationException("Введено некорректное значение null");
@@ -47,6 +47,7 @@ public class UserController {
             log.debug("Добавлен новый пользователь");
             users.put(user.getId(), user);
         }
+        return user;
     }
 
     @PutMapping("/users")
