@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.Data;
+import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Component
 @Data
 public class InMemoryUserStorage implements UserStorage {
@@ -32,7 +32,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(User user) {
+    public User create(@NonNull User user) {
         if (user == null) {
             log.debug("Введено некорректное значение null");
             throw new ValidationException("Введено некорректное значение null");
@@ -59,7 +59,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(User user) {
+    public User update( User user) {
         if (user.getEmail().isBlank() || user.getEmail() == null) {
             log.debug("В переданных данных отсутствует адрес электронной почты");
             throw new ValidationException("В переданных данных отсутствует адрес электронной почты");

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
@@ -18,21 +19,24 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
 
-    public void addLike(Long idFilm, Long idUser) {
+    public void addLike(long idFilm, long idUser) {
+        if (idFilm < 0 || idUser < 0) {throw new ValidationException("Введено некорректное значение id");}
         List<Film> films = (List<Film>) filmStorage.findAll();
         Film film = films.get(Math.toIntExact(idFilm));
         film.getLikes().add(idUser);
         filmStorage.update(film);
     }
 
-    public void deleteLike(Long idFilm, Long idUser) {
+    public void deleteLike(long idFilm, long idUser) {
+        if (idFilm < 0 || idUser < 0) {throw new ValidationException("Введено некорректное значение id");}
         List<Film> films = (List<Film>) filmStorage.findAll();
         Film film = films.get(Math.toIntExact(idFilm));
         film.getLikes().remove(idUser);
         filmStorage.update(film);
     }
 
-    public Integer getAmountLikes(Long idFilm) {
+    public Integer getAmountLikes(long idFilm) {
+        if (idFilm < 0) {throw new ValidationException("Введено некорректное значение id");}
         List<Film> films = (List<Film>) filmStorage.findAll();
         Film film = films.get(Math.toIntExact(idFilm));
         return film.getLikes().size();
@@ -47,6 +51,7 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
+        if (id < 0) {throw new ValidationException("Введено некорректное значение id");}
         List<Film> films = (List<Film>) filmStorage.findAll();
         return films.get(Math.toIntExact(id));
     }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -20,6 +21,7 @@ public class UserService {
     private final UserStorage userStorage;
 
     public User addFriend(Long idUser1, Long idUser2) {
+        if (idUser1 < 0 || idUser2 < 0) {throw new ValidationException("Введено некорректное значение id");}
         User user1 = userStorage.getById(idUser1);
         User friend = userStorage.getById(idUser2);
         user1.addFriend(idUser2);
@@ -30,6 +32,7 @@ public class UserService {
     }
 
     public User deleteFriend(Long idUser1, Long idUser2){
+        if (idUser1 < 0 || idUser2 < 0) {throw new ValidationException("Введено некорректное значение id");}
         User user1 = userStorage.getById(idUser1);
         User friend = userStorage.getById(idUser2);
         user1.deleteFriend(idUser2);
@@ -40,12 +43,14 @@ public class UserService {
     }
 
     public List<User> getAllFriends(Long id) {
+        if (id < 0) {throw new ValidationException("Введено некорректное значение id");}
        return userStorage.getById(id).getFriends().stream()
                .map(userStorage::getById)
                .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(Long idUser1, Long idUser2) {
+        if (idUser1 < 0 || idUser2 < 0) {throw new ValidationException("Введено некорректное значение id");}
         List<User> users = (List<User>) userStorage.findAll();
         User user1 = users.get(Math.toIntExact(idUser1));
         User user2 = users.get(Math.toIntExact(idUser2));
