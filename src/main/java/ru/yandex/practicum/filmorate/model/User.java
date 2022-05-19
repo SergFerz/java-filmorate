@@ -18,7 +18,7 @@ public class User {
     private final LocalDate birthday;
     private Set<Long> friends;
 
-    public User(Long id, String email, String login, String name, LocalDate birthday) {
+    public User(Long id, String email, String name, String login,  LocalDate birthday) {
         this.id = id;
         this.email = email;
         this.login = login;
