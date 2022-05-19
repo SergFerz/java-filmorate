@@ -37,6 +37,8 @@ class FilmControllerTest {
                 .andExpect(status().isOk());
     }
 
+
+
     @MethodSource("invalidFilmSource")
     @ParameterizedTest(name = "{0}")
     void createInvalidUserTest(String s, Film film) throws Exception {
@@ -80,8 +82,8 @@ class FilmControllerTest {
                                 "Seven",
                                 "test",
                                 LocalDate.of(2000, 1, 1),
-                                -125)),
-                Arguments.of("Invalid film = null", null)
+                                -125))
+                //Arguments.of("Invalid film = null", null)
         );
     }
 }

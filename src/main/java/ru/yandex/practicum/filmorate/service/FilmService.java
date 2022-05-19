@@ -46,7 +46,7 @@ public class FilmService {
         return films;
     }
 
-    public Film getFilmById(Long id) {
+    public Film getFilmById(long id) {
         List<Film> films = (List<Film>) filmStorage.findAll();
         return films.get(Math.toIntExact(id));
     }

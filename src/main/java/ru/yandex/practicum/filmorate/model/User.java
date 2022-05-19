@@ -1,28 +1,32 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldNameConstants;
+import lombok.experimental.NonFinal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-@Data
-@RequiredArgsConstructor
+@Value
 public class User {
 
-    private final Long id;
-    private final String email;
-    private final String login;
-    private String name;
-    private final LocalDate birthday;
-    private Set<Long> friends;
+     long id;
+     String email;
+     String login;
+     @NonFinal@Setter String name;
+     LocalDate birthday;
 
-    public User(Long id, String email, String name, String login,  LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.login = login;
-        this.name = name;
-        this.birthday = birthday;
-    }
+     private final Set<Long> friends = new TreeSet<>();
+
+     public void addFriend(long id) {
+         friends.add(id);
+     }
+
+     public void deleteFriend(long id) {
+          friends.remove(id);
+     }
 }

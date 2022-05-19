@@ -1,19 +1,23 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.TreeSet;
 
-@Data
+@Value
 public class Film implements Comparable<Film> {
 
-    private final Long id;
-    private final String name;
-    private final String description;
-    private final LocalDate releaseDate;
-    private final int duration;
-    private Set<Long> likes;
+     long id;
+     String name;
+     String description;
+     LocalDate releaseDate;
+     int duration;
+
+     Set<Long> likes = new TreeSet<>();
 
     @Override
     public int compareTo(Film o) {
