@@ -19,7 +19,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handle(final NoSuchElementException ex) {
+    public ErrorResponse handle(final NullPointerException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 

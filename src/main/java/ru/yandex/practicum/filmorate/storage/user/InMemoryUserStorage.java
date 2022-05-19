@@ -24,6 +24,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final Map<Long, User> users = new HashMap<>();
+    private long counter = 1;
+
+    public long getId() {
+        while (users.containsKey(counter)) {
+            counter++;
+        }
+        return counter;
+    }
 
     @Override
     public Collection<User> findAll() {
@@ -32,7 +40,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User create(@NonNull User user) {
+    public User create(User user) {
         if (user == null) {
             log.debug("Введено некорректное значение null");
             throw new ValidationException("Введено некорректное значение null");
@@ -59,7 +67,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update( User user) {
+    public User update(@NonNull User user) {
         if (user.getEmail().isBlank() || user.getEmail() == null) {
             log.debug("В переданных данных отсутствует адрес электронной почты");
             throw new ValidationException("В переданных данных отсутствует адрес электронной почты");
