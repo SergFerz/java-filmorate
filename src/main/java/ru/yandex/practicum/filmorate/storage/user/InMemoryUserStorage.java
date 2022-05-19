@@ -67,7 +67,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User update(@NonNull User user) {
+    public User update(User user) {
+        if (user == null) {throw new ValidationException("Введено некорректное значение null");}
         if (user.getEmail().isBlank() || user.getEmail() == null) {
             log.debug("В переданных данных отсутствует адрес электронной почты");
             throw new ValidationException("В переданных данных отсутствует адрес электронной почты");
