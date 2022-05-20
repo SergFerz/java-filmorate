@@ -23,6 +23,7 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User create(@RequestBody User user) {
+
         return userStorage.create(user);
     }
 
