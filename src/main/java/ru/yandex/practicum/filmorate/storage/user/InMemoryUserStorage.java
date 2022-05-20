@@ -58,7 +58,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getById(Long id) {
-        if ((id < 1) || (id == null))  {throw new ValidationException("Введено некорректное значение id");}
+        if ((id < 1) || (id == null))  {throw new NullPointerException("Введено некорректное значение id");}
         return users.get(id);
     }
 

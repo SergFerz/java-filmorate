@@ -42,7 +42,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("Введен некорректный день рождения");
         } else if (film.getId() < 0) {
             log.debug("Некорректный идентификатор id");
-            throw new ValidationException("Некорректный идентификатор id");
+            throw new NullPointerException("Некорректный идентификатор id");
         } else {
             log.debug("Добавлен новый фильм");
             films.put(film.getId(), film);
@@ -54,7 +54,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film update(Film film) {
         if (film == null) {
             log.debug("Введено некорректное значение: null");
-            throw new ValidationException("Введено некорректное значение: null");
+            throw new NullPointerException("Введено некорректное значение: null");
         }
         if (!films.containsValue(film)) {
             throw new NullPointerException("Этот film не содержится в реестре");
