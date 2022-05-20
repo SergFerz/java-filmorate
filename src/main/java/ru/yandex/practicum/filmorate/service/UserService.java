@@ -58,8 +58,10 @@ public class UserService {
         }
         User user1 = userStorage.getById(idUser1);
         User user2 = userStorage.getById(idUser2);
+        if (user1.getFriends().isEmpty() || user2.getFriends().isEmpty()) {
+            return new ArrayList<User>();
+        }
         Set<Long> commonFriendsId = user1.getFriends();
-        if (commonFriendsId.isEmpty()) {return new ArrayList<User>();}
         commonFriendsId.retainAll(user2.getFriends());
         return commonFriendsId.stream()
                 .map(userStorage::getById)
