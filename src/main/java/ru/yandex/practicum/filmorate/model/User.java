@@ -19,9 +19,10 @@ public class User {
      @NotBlank
      @Positive
      long id;
+
      @NotNull
-     @Email
      @NotBlank
+     @Email
      String email;
      @NotNull
      @NotBlank

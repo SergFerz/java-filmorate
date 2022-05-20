@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -29,6 +30,9 @@ class InMemoryUserStorageTest {
     @Autowired
     InMemoryUserStorage userStorage;
 
+    @Autowired
+    UserController userController;
+
     @Test
     void test1_createValidUserResponseShouldBeOk() throws Exception {
         User user = new User(1L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
@@ -38,9 +42,10 @@ class InMemoryUserStorageTest {
     }
 
     @Test
-    void test2_createValidUserResponseShouldBeOk() throws JsonProcessingException {
+    void test2_createValidUserResponseShouldBeOk()  {
         User user = new User(2L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
-        userStorage.create(user);
-        assertEquals(user,userStorage.getById(2L));
+        userController.create(user);
+        //userStorage.create(user);
+        assertEquals(user,userController.findUserById(2L));
     }
 }
