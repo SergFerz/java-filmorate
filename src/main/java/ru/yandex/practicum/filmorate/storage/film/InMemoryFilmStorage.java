@@ -43,18 +43,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     private void validatefilm(Film film) {
-         if (film.getDescription().length() > 200) {
+        if (film.getDescription().length() > 200) {
             log.debug("Описание не должно превышать 200 символов");
             throw new ValidationException("Описание не должно превышать 200 символов");
-        } else if (film.getDuration() < 0) {
-            log.debug("Продолжительность фильма должна быть положительной.");
-            throw new ValidationException("Продолжительность фильма должна быть положительной.");
-        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
+        }  else if (film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
             log.debug("Введен некорректный день релиза");
             throw new ValidationException("Введен некорректный день рождения");
-        } else if (film.getId() < 0) {
-            log.debug("Некорректный идентификатор id");
-            throw new NullPointerException("Некорректный идентификатор id");
         }
     }
 }

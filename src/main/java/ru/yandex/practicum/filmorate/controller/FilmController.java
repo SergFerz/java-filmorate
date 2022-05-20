@@ -12,6 +12,7 @@ import java.util.Collection;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@ControllerAdvice
 public class FilmController {
 
     private final FilmStorage filmStorage;

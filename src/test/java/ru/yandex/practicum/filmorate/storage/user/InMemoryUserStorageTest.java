@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +37,10 @@ class InMemoryUserStorageTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void test2_createValidUserResponseShouldBeOk() throws JsonProcessingException {
+        User user = new User(2L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
+        userStorage.create(user);
+        assertEquals(user,userStorage.getById(2L));
+    }
 }

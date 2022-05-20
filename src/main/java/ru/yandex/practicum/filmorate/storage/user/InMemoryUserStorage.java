@@ -69,9 +69,6 @@ public class InMemoryUserStorage implements UserStorage {
         } else if (user.getBirthday().isAfter(LocalDate.now())) {
             log.debug("Введен некорректный день рождения");
             throw new ValidationException("Введен некорректный день рождения");
-        } else if (user.getId() < 0) {
-            log.debug("Некорректный идентификатор id");
-            throw new NullPointerException("Некорректный идентификатор id");
         }
     }
 }

@@ -4,6 +4,7 @@ import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.TreeSet;
@@ -13,6 +14,7 @@ public class Film implements Comparable<Film> {
 
     @NotNull
     @NotBlank
+    @Positive
     Long id;
     @NotNull
     @NotBlank
@@ -25,6 +27,7 @@ public class Film implements Comparable<Film> {
     LocalDate releaseDate;
     @NotNull
     @NotBlank
+    @Positive
     int duration;
 
      Set<Long> likes = new TreeSet<Long>();
