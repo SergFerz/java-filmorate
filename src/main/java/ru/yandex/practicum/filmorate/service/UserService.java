@@ -56,15 +56,17 @@ public class UserService {
         if (idUser1 < 0 || idUser2 < 0 || idUser1 == null || idUser2 == null) {
             throw new NullPointerException("Введено некорректное значение id");
         }
-        User user1 = userStorage.getById(idUser1);
-        User user2 = userStorage.getById(idUser2);
-        if (user1 == null || user2 == null ||user1.getFriends().isEmpty() || user2.getFriends().isEmpty()) {
+        try {
+            User user1 = userStorage.getById(idUser1);
+            User user2 = userStorage.getById(idUser2);
+            Set<Long> commonFriendsId = user1.getFriends();
+            commonFriendsId.retainAll(user2.getFriends());
+            return commonFriendsId.stream()
+                    .map(userStorage::getById)
+                    .collect(Collectors.toList());
+        } catch (NullPointerException ex) {
             return new ArrayList<User>();
         }
-        Set<Long> commonFriendsId = user1.getFriends();
-        commonFriendsId.retainAll(user2.getFriends());
-        return commonFriendsId.stream()
-                .map(userStorage::getById)
-                .collect(Collectors.toList());
+
     }
 }
