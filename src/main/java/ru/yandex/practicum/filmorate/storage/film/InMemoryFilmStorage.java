@@ -56,6 +56,9 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.debug("Введено некорректное значение: null");
             throw new ValidationException("Введено некорректное значение: null");
         }
+        if (!films.containsValue(film)) {
+            throw new NullPointerException("Этот film не содержится в реестре");
+        }
         films.put(film.getId(), film);
         log.debug("Фильм " + film.getName() + " обновлен.");
         return film;
