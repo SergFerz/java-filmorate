@@ -58,7 +58,7 @@ public class UserService {
         }
         User user1 = userStorage.getById(idUser1);
         User user2 = userStorage.getById(idUser2);
-        if (user1.getFriends().isEmpty() || user2.getFriends().isEmpty()) {
+        if (user1 == null || user2 == null ||user1.getFriends().isEmpty() || user2.getFriends().isEmpty()) {
             return new ArrayList<User>();
         }
         Set<Long> commonFriendsId = user1.getFriends();
