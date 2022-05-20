@@ -49,7 +49,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public User update(User user) {
         validateUser(user);
         log.debug("Пользователь " + user.getId() + " обновлен.");
@@ -80,7 +79,7 @@ public class InMemoryUserStorage implements UserStorage {
             throw new ValidationException("Введен некорректный день рождения");
         } else if (user.getId() < 0) {
             log.debug("Некорректный идентификатор id");
-            throw new ValidationException("Некорректный идентификатор id");
+            throw new NullPointerException("Некорректный идентификатор id");
         } result = true;
 
         return result;
