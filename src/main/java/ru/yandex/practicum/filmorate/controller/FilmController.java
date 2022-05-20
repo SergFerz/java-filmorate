@@ -1,13 +1,15 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import javax.validation.Valid;
 import java.util.Collection;
-
+@Validated
 @RestController
 @RequiredArgsConstructor
 public class FilmController {
@@ -21,32 +23,32 @@ public class FilmController {
     }
 
     @PostMapping("/films")
-    public Film create(@RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         return filmStorage.create(film);
     }
 
     @PutMapping("/films")
-    public Film update(@RequestBody Film film) {
+    public Film update(@Valid @RequestBody Film film) {
         return filmStorage.update(film);
     }
 
     @GetMapping("/films/{id}")
-    public Film findFilmById(@PathVariable Long id) {
+    public Film findFilmById(@Valid @PathVariable Long id) {
         return filmService.getFilmById(id);
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public void addLike(@PathVariable Long id, Long userId) {
+    public void addLike(@Valid @PathVariable Long id, Long userId) {
         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public void deleteLike(@PathVariable Long id, Long userId) {
+    public void deleteLike(@Valid @PathVariable Long id, Long userId) {
         filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/films/popular?count={count}")
-    public void getTopFilm(@RequestParam(defaultValue = "10", required = false) int count) {
+    public void getTopFilm(@Valid @RequestParam(defaultValue = "10", required = false) int count) {
         filmService.getTopFilm(count);
     }
 }
