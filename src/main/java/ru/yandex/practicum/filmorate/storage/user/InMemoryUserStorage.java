@@ -39,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
         validateUser(user);
         if (user.getName().isBlank()) {
                 user.setName(user.getLogin());
-            }
+        }
         log.debug("Добавлен новый пользователь");
         users.put(user.getId(), user);
         return user;
@@ -59,9 +59,7 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(id);
     }
 
-    private boolean validateUser(User user) {
-        boolean result = false;
-
+    private User validateUser(User user) {
         if (user == null) {
             log.debug("Введено некорректное значение null");
             throw new ValidationException("Введено некорректное значение null");
@@ -77,8 +75,7 @@ public class InMemoryUserStorage implements UserStorage {
         } else if (user.getId() < 0) {
             log.debug("Некорректный идентификатор id");
             throw new NullPointerException("Некорректный идентификатор id");
-        } else result = true;
-
-        return result;
+        } else
+        return user;
     }
 }
