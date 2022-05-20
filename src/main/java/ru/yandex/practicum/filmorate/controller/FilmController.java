@@ -34,10 +34,8 @@ public class FilmController {
     }
 
     @GetMapping("/films/{id}")
-    public Optional<Film> findFilmById(@PathVariable Long id) {
-        return filmStorage.findAll().stream()
-                .filter(x -> x.getId() == id)
-                .findFirst();
+    public Film findFilmById(@PathVariable Long id) {
+        return filmService.getFilmById(id);
     }
 
     @PutMapping("/films/{id}/like/{userId}")

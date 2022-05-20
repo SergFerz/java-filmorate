@@ -52,6 +52,10 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
+        if (film == null) {
+            log.debug("Введено некорректное значение: null");
+            throw new ValidationException("Введено некорректное значение: null");
+        }
         films.put(film.getId(), film);
         log.debug("Фильм " + film.getName() + " обновлен.");
         return film;

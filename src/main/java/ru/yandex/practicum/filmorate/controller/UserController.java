@@ -36,10 +36,8 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public Optional<User> findUserById(@PathVariable Long id) {
-        return userStorage.findAll().stream()
-                .filter(x -> x.getId() == id)
-                .findFirst();
+    public User findUserById(@PathVariable Long id) {
+        return userStorage.getById(id);
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
