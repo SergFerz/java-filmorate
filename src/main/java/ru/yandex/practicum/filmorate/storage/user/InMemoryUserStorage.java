@@ -21,7 +21,7 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     private Long counter = 1L;
 
-    public Long getId() {
+    public Long getNextId() {
         while (users.containsKey(counter)) {
             counter++;
         }
