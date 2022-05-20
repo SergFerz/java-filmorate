@@ -9,13 +9,13 @@ import java.util.TreeSet;
 @Value
 public class Film implements Comparable<Film> {
 
-     Integer id;
+     Long id;
      String name;
      String description;
      LocalDate releaseDate;
      int duration;
 
-     Set<Integer> likes = new TreeSet<Integer>();
+     Set<Long> likes = new TreeSet<Long>();
 
     @Override
     public int compareTo(Film o) {

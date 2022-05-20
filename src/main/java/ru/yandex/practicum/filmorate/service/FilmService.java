@@ -1,14 +1,11 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +16,7 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
 
-    public void addLike(Integer idFilm, Integer idUser) {
+    public void addLike(Long idFilm, Long idUser) {
         if (idFilm < 0 || idUser < 0 || idUser == null || idFilm == null) {
             throw new ValidationException("Введено некорректное значение id");
         }
@@ -29,7 +26,7 @@ public class FilmService {
         filmStorage.update(film);
     }
 
-    public void deleteLike(Integer idFilm, Integer idUser) {
+    public void deleteLike(Long idFilm, Long idUser) {
         if (idFilm < 0 || idUser < 0 || idUser == null || idFilm == null) {
             throw new ValidationException("Введено некорректное значение id");
         }
@@ -39,7 +36,7 @@ public class FilmService {
         filmStorage.update(film);
     }
 
-    public Integer getAmountLikes(Integer idFilm) {
+    public Integer getAmountLikes(Long idFilm) {
         if (idFilm < 0 || idFilm == null) {
             throw new ValidationException("Введено некорректное значение id");
         }
@@ -59,7 +56,7 @@ public class FilmService {
         return films;
     }
 
-    public Film getFilmById(Integer id) {
+    public Film getFilmById(Long id) {
         if (id < 0 || id == null) {
             throw new ValidationException("Введено некорректное значение id");}
         List<Film> films = (List<Film>) filmStorage.findAll();

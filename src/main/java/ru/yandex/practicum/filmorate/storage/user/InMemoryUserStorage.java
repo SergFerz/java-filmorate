@@ -18,10 +18,10 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final Map<Integer, User> users = new HashMap<>();
-    private Integer counter = 1;
+    private final Map<Long, User> users = new HashMap<>();
+    private Long counter = 1L;
 
-    public Integer getId() {
+    public Long getId() {
         while (users.containsKey(counter)) {
             counter++;
         }
@@ -54,7 +54,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(Integer id) {
+    public User getById(Long id) {
         if ((id < 1) || (id == null))  {throw new NullPointerException("Введено некорректное значение id");}
         return users.get(id);
     }

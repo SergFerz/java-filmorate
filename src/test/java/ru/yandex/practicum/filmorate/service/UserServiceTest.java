@@ -30,7 +30,7 @@ class UserServiceTest {
 
     @Test
     void test1_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(1, "qwerty@mail.ru", "test", "Luce", LocalDate.of(2000, 1, 1));
+        User user = new User(1L, "qwerty@mail.ru", "test", "Luce", LocalDate.of(2000, 1, 1));
         String body = mapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -38,7 +38,8 @@ class UserServiceTest {
 
     @Test
     void test_getCommonFriends(){
-        List<User> list = userService.getCommonFriends(1, 2);
+        List<User> list = userService.getCommonFriends(1L, 2L);
+        assertNotNull(list);
         assertEquals(0, list.size());
     }
 

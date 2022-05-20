@@ -10,19 +10,19 @@ import java.util.TreeSet;
 @Value
 public class User {
 
-     Integer id;
+     Long id;
      String email;
      String login;
      @NonFinal@Setter String name;
      LocalDate birthday;
 
-     private final Set<Integer> friends = new TreeSet<Integer>();
+     private final Set<Long> friends = new TreeSet<Long>();
 
-     public void addFriend(Integer id) {
+     public void addFriend(Long id) {
          friends.add(id);
      }
 
-     public void deleteFriend(Integer id) {
+     public void deleteFriend(Long id) {
           friends.remove(id);
      }
 }
