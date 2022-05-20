@@ -47,10 +47,10 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        validateUser(user);
-        if (!users.containsValue(user)) {
+        //validateUser(user);
+        /*if (!users.containsValue(user)) {
             throw new NullPointerException("Этот film не содержится в реестре");
-        }
+        }*/
         log.debug("Пользователь " + user.getId() + " обновлен.");
         users.put(user.getId(), user);
         return user;
