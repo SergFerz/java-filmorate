@@ -25,6 +25,24 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
+        validatefilm(film);
+        log.debug("Добавлен новый фильм");
+        films.put(film.getId(), film);
+        return film;
+    }
+
+    @Override
+    public Film update(Film film) {
+        validatefilm(film);
+        if (!films.containsValue(film)) {
+            throw new NullPointerException("Этот film не содержится в реестре");
+        }
+        films.put(film.getId(), film);
+        log.debug("Фильм " + film.getName() + " обновлен.");
+        return film;
+    }
+
+    private void validatefilm(Film film) {
         if (film == null) {
             log.debug("Введено некорректное значение: null");
             throw new ValidationException("Введено некорректное значение: null");
@@ -38,29 +56,11 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.debug("Продолжительность фильма должна быть положительной.");
             throw new ValidationException("Продолжительность фильма должна быть положительной.");
         } else if (film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
-            log.debug("Введен некорректный день рождения");
+            log.debug("Введен некорректный день релиза");
             throw new ValidationException("Введен некорректный день рождения");
-        } else if (film.getId() < 0) {
+        } else if (film.getId() == null || film.getId() < 0) {
             log.debug("Некорректный идентификатор id");
             throw new NullPointerException("Некорректный идентификатор id");
-        } else {
-            log.debug("Добавлен новый фильм");
-            films.put(film.getId(), film);
         }
-        return film;
-    }
-
-    @Override
-    public Film update(Film film) {
-        if (film == null) {
-            log.debug("Введено некорректное значение: null");
-            throw new NullPointerException("Введено некорректное значение: null");
-        }
-        if (!films.containsValue(film)) {
-            throw new NullPointerException("Этот film не содержится в реестре");
-        }
-        films.put(film.getId(), film);
-        log.debug("Фильм " + film.getName() + " обновлен.");
-        return film;
     }
 }

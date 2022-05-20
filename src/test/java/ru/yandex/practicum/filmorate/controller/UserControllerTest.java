@@ -74,8 +74,8 @@ public class UserControllerTest {
                                 "qwerty@mail.ru",
                                 "te st",
                                 "Lucy",
-                                LocalDate.of(2000, 1, 1)))
-                //Arguments.of("Invalid user = null", null)
+                                LocalDate.of(2000, 1, 1))),
+                Arguments.of("Invalid user = null", null)
         );
    }
 }

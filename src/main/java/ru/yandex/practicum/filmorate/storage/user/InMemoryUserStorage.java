@@ -48,6 +48,9 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User update(User user) {
         validateUser(user);
+        if (!users.containsValue(user)) {
+            throw new NullPointerException("Этот film не содержится в реестре");
+        }
         log.debug("Пользователь " + user.getId() + " обновлен.");
         users.put(user.getId(), user);
         return user;
@@ -59,23 +62,22 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(id);
     }
 
-    private User validateUser(User user) {
+    private void validateUser(User user) {
         if (user == null) {
             log.debug("Введено некорректное значение null");
             throw new ValidationException("Введено некорректное значение null");
         } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")|| user.getEmail() == null) {
             log.debug("Введен некорректный адрес электронной почты");
             throw new ValidationException("Введен некорректный адрес электронной почты");
-        } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+        } else if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             log.debug("Введен некорректный логин");
             throw new ValidationException("Введен некорректный логин");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+        } else if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
             log.debug("Введен некорректный день рождения");
             throw new ValidationException("Введен некорректный день рождения");
-        } else if (user.getId() < 0) {
+        } else if (user.getId() == null || user.getId() < 0) {
             log.debug("Некорректный идентификатор id");
             throw new NullPointerException("Некорректный идентификатор id");
-        } else
-        return user;
+        }
     }
 }
