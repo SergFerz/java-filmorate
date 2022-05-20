@@ -41,10 +41,36 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
+        if (validateUser(user)) {
+            if (user.getName().isBlank()) {
+                user.setName(user.getLogin());}
+            }
+        log.debug("Добавлен новый пользователь");
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    @Override
+    public User update(User user) {
+        validateUser(user);
+        log.debug("Пользователь " + user.getId() + " обновлен.");
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    @Override
+    public User getById(Long id) {
+        if ((id < 1) || (id == null))  {throw new ValidationException("Введено некорректное значение id");}
+        return users.get(id);
+    }
+
+    private boolean validateUser(User user) {
+        boolean result = false;
+
         if (user == null) {
             log.debug("Введено некорректное значение null");
             throw new ValidationException("Введено некорректное значение null");
-        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")|| user.getEmail() == null) {
             log.debug("Введен некорректный адрес электронной почты");
             throw new ValidationException("Введен некорректный адрес электронной почты");
         } else if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
@@ -56,34 +82,8 @@ public class InMemoryUserStorage implements UserStorage {
         } else if (user.getId() < 0) {
             log.debug("Некорректный идентификатор id");
             throw new ValidationException("Некорректный идентификатор id");
-        } else {
-            if (user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            log.debug("Добавлен новый пользователь");
-            users.put(user.getId(), user);
-        }
-        return user;
-    }
+        } result = true;
 
-    @Override
-    public User update(User user) {
-        if (user == null) {throw new ValidationException("Введено некорректное значение null");}
-        if (!users.containsValue(user)) {
-            throw new NullPointerException("Этот user не содержится в реестре");
-        }
-        if (user.getEmail().isBlank() || user.getEmail() == null) {
-            log.debug("В переданных данных отсутствует адрес электронной почты");
-            throw new ValidationException("В переданных данных отсутствует адрес электронной почты");
-        }
-        log.debug("Пользователь " + user.getId() + " обновлен.");
-        users.put(user.getId(), user);
-        return user;
-    }
-
-    @Override
-    public User getById(Long id) {
-        if ((id < 1) || (id == null))  {throw new ValidationException("Введено некорректное значение id");}
-        return users.get(id);
+        return result;
     }
 }
