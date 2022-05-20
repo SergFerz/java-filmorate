@@ -77,7 +77,7 @@ public class InMemoryUserStorage implements UserStorage {
         } else if (user.getId() < 0) {
             log.debug("Некорректный идентификатор id");
             throw new NullPointerException("Некорректный идентификатор id");
-        } result = true;
+        } else result = true;
 
         return result;
     }
