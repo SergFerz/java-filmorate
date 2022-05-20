@@ -31,7 +31,7 @@ class FilmControllerTest {
 
     @Test
     void test1_createValidFilmResponseShouldBeOk() throws Exception {
-        Film film = new Film(1L, "Seven", "test", LocalDate.of(2000, 1, 1), 125);
+        Film film = new Film(1, "Seven", "test", LocalDate.of(2000, 1, 1), 125);
         String body = mapper.writeValueAsString(film);
         this.mockMvc.perform(post("/films").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -51,25 +51,25 @@ class FilmControllerTest {
     private static Stream<Arguments> invalidFilmSource() {
         return Stream.of(
                 Arguments.of("Invalid releaseDate",
-                        new Film(1L,
+                        new Film(1,
                                 "Seven",
                                 "test",
                                 LocalDate.of(1895, 12, 27),
                                 125)),
                 Arguments.of("Invalid name",
-                        new Film(1L,
+                        new Film(1,
                                 "",
                                 "test",
                                 LocalDate.of(2000, 1, 1),
                                 125)),
                 Arguments.of("Invalid id",
-                        new Film(-1L,
+                        new Film(-1,
                                 "Seven",
                                 "test",
                                 LocalDate.of(2000, 1, 1),
                                 125)),
                 Arguments.of("Invalid description",
-                        new Film(1L,
+                        new Film(1,
                                 "Seven",
                                 "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop" +
                                         "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop" +
@@ -78,7 +78,7 @@ class FilmControllerTest {
                                 LocalDate.of(2000, 1, 1),
                                 125)),
                 Arguments.of("Invalid name",
-                        new Film(1L,
+                        new Film(1,
                                 "Seven",
                                 "test",
                                 LocalDate.of(2000, 1, 1),

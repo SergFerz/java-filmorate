@@ -1,12 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.Data;
-import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -21,10 +18,10 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final Map<Long, User> users = new HashMap<>();
-    private long counter = 1;
+    private final Map<Integer, User> users = new HashMap<>();
+    private Integer counter = 1;
 
-    public long getId() {
+    public Integer getId() {
         while (users.containsKey(counter)) {
             counter++;
         }
@@ -57,7 +54,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(Long id) {
+    public User getById(Integer id) {
         if ((id < 1) || (id == null))  {throw new NullPointerException("Введено некорректное значение id");}
         return users.get(id);
     }

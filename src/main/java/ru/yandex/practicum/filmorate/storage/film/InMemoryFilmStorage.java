@@ -15,7 +15,7 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryFilmStorage.class);
-    private final Map<Long, Film> films = new HashMap<>();
+    private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
     public Collection<Film> findAll() {
