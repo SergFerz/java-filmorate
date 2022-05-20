@@ -75,10 +75,9 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getEmail().isBlank() || user.getEmail() == null) {
             log.debug("В переданных данных отсутствует адрес электронной почты");
             throw new ValidationException("В переданных данных отсутствует адрес электронной почты");
-        } else {
-            log.debug("Пользователь " + user.getId() + " обновлен.");
-            users.put(user.getId(), user);
         }
+        log.debug("Пользователь " + user.getId() + " обновлен.");
+        users.put(user.getId(), user);
         return user;
     }
 
