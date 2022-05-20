@@ -54,11 +54,12 @@ public class UserService {
 
     public List<User> getCommonFriends(Long idUser1, Long idUser2) {
         if (idUser1 < 0 || idUser2 < 0 || idUser1 == null || idUser2 == null) {
-            throw new ValidationException("Введено некорректное значение id");}
-        List<User> users = (List<User>) userStorage.findAll();
-        User user1 = users.get(Math.toIntExact(idUser1));
-        User user2 = users.get(Math.toIntExact(idUser2));
+            throw new NullPointerException("Введено некорректное значение id");
+        }
+        User user1 = userStorage.getById(idUser1);
+        User user2 = userStorage.getById(idUser2);
         Set<Long> commonFriendsId = user1.getFriends();
+        if (commonFriendsId.isEmpty()) {return new ArrayList<User>();}
         commonFriendsId.retainAll(user2.getFriends());
         return commonFriendsId.stream()
                 .map(userStorage::getById)
