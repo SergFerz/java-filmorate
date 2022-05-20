@@ -19,9 +19,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final Map<Long, User> users = new HashMap<>();
-    private Long counter = 1L;
+    private long counter = 1L;
 
-    public Long getNextId() {
+    public long getNextId() {
         while (users.containsKey(counter)) {
             counter++;
         }
@@ -36,7 +36,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
-        validateUser(user);
+        //validateUser(user);
         if (user.getName().isBlank()) {
                 user.setName(user.getLogin());
         }
@@ -47,7 +47,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        //validateUser(user);
+        validateUser(user);
         /*if (!users.containsValue(user)) {
             throw new NullPointerException("Этот film не содержится в реестре");
         }*/
@@ -57,8 +57,8 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(Long id) {
-        if ((id < 1) || (id == null))  {throw new NullPointerException("Введено некорректное значение id");}
+    public User getById(long id) {
+        if (id < 1)  {throw new NullPointerException("Введено некорректное значение id");}
         return users.get(id);
     }
 

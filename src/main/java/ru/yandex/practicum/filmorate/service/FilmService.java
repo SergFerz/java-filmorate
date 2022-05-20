@@ -16,8 +16,8 @@ public class FilmService {
 
     private final FilmStorage filmStorage;
 
-    public void addLike(Long idFilm, Long idUser) {
-        if (idFilm < 0 || idUser < 0 || idUser == null || idFilm == null) {
+    public void addLike(long idFilm, long idUser) {
+        if (idFilm < 0 || idUser < 0) {
             throw new ValidationException("Введено некорректное значение id");
         }
         List<Film> films = (List<Film>) filmStorage.findAll();
@@ -26,8 +26,8 @@ public class FilmService {
         filmStorage.update(film);
     }
 
-    public void deleteLike(Long idFilm, Long idUser) {
-        if (idFilm < 0 || idUser < 0 || idUser == null || idFilm == null) {
+    public void deleteLike(long idFilm, long idUser) {
+        if (idFilm < 0 || idUser < 0) {
             throw new ValidationException("Введено некорректное значение id");
         }
         List<Film> films = (List<Film>) filmStorage.findAll();
@@ -36,8 +36,8 @@ public class FilmService {
         filmStorage.update(film);
     }
 
-    public Integer getAmountLikes(Long idFilm) {
-        if (idFilm < 0 || idFilm == null) {
+    public Integer getAmountLikes(long idFilm) {
+        if (idFilm < 0) {
             throw new ValidationException("Введено некорректное значение id");
         }
         List<Film> films = (List<Film>) filmStorage.findAll();
@@ -56,8 +56,8 @@ public class FilmService {
         return films;
     }
 
-    public Film getFilmById(Long id) {
-        if (id < 0 || id == null) {
+    public Film getFilmById(long id) {
+        if (id < 0) {
             throw new ValidationException("Введено некорректное значение id");}
         List<Film> films = (List<Film>) filmStorage.findAll();
         return films.get(Math.toIntExact(id));

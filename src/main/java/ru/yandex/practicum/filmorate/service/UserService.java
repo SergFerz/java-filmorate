@@ -19,8 +19,8 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    public User addFriend(Long idUser1, Long idUser2) {
-        if (idUser1 < 0 || idUser2 < 0 || idUser1 == null || idUser2 == null) {
+    public User addFriend(long idUser1, long idUser2) {
+        if (idUser1 < 0 || idUser2 < 0) {
             throw new ValidationException("Введено некорректное значение id");}
         User user1 = userStorage.getById(idUser1);
         User friend = userStorage.getById(idUser2);
@@ -31,8 +31,8 @@ public class UserService {
         return user1;
     }
 
-    public User deleteFriend(Long idUser1, Long idUser2){
-        if (idUser1 < 0 || idUser2 < 0 || idUser1 == null || idUser2 == null) {
+    public User deleteFriend(long idUser1, long idUser2){
+        if (idUser1 < 0 || idUser2 < 0) {
             throw new ValidationException("Введено некорректное значение id");}
         User user1 = userStorage.getById(idUser1);
         User friend = userStorage.getById(idUser2);
@@ -43,16 +43,16 @@ public class UserService {
         return user1;
     }
 
-    public List<User> getAllFriends(Long id) {
-        if (id < 0 || id == null) {
+    public List<User> getAllFriends(long id) {
+        if (id < 0) {
             throw new ValidationException("Введено некорректное значение id");}
        return userStorage.getById(id).getFriends().stream()
                .map(userStorage::getById)
                .collect(Collectors.toList());
     }
 
-    public List<User> getCommonFriends(Long idUser1, Long idUser2) {
-        if (idUser1 < 0 || idUser2 < 0 || idUser1 == null || idUser2 == null) {
+    public List<User> getCommonFriends(long idUser1, long idUser2) {
+        if (idUser1 < 0 || idUser2 < 0) {
             throw new NullPointerException("Введено некорректное значение id");
         }
         try {

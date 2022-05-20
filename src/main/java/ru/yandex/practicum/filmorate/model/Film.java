@@ -15,7 +15,7 @@ public class Film implements Comparable<Film> {
     @NotNull
     @NotBlank
     @Positive
-    Long id;
+    long id;
     @NotNull
     @NotBlank
     String name;
@@ -30,7 +30,7 @@ public class Film implements Comparable<Film> {
     @Positive
     int duration;
 
-     Set<Long> likes = new TreeSet<Long>();
+     Set<Long> likes = new TreeSet<>();
 
     @Override
     public int compareTo(Film o) {
