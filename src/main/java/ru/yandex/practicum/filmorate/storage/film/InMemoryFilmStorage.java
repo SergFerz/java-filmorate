@@ -49,9 +49,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film update(Film film) {
         validatefilm(film);
-        /*if (!films.containsValue(film)) {
-            throw new NotFoundException("Этот film не содержится в реестре");
-        }*/
         films.put(film.getId(), film);
         log.debug("Фильм " + film.getName() + " обновлен.");
         return film;
@@ -61,24 +58,27 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (film.getId() < 0) {
             log.debug("Введено некорректное значение id");
             throw new NotFoundException("Введено некорректное значение id");
-        } else if (film.getName().isBlank()){
+        } else if (film.getName().isBlank()) {
             throw new ValidationException("Описание не должно превышать 200 символов");
         } else if (film.getDescription().length() > 200) {
             log.debug("Описание не должно превышать 200 символов");
             throw new ValidationException("Описание не должно превышать 200 символов");
-        }  else if (film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
+        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             log.debug("Введен некорректный день релиза");
             throw new ValidationException("Введен некорректный день релиза");
         } else if (film.getDuration() < 0) {
             throw new ValidationException("Введено некорректное значение duration");
-        } else if (film.getId() == 0) {film.setId(getNextId());}
+        } else if (film.getId() == 0) {
+            film.setId(getNextId());
+        }
         return film;
     }
 
     @Override
     public Film getFilmById(long id) {
         if (id < 1) {
-            throw new NotFoundException("Введено некорректное значение id");}
+            throw new NotFoundException("Введено некорректное значение id");
+        }
         return films.get(id);
     }
 }

@@ -33,7 +33,7 @@ public class InMemoryUserStorage implements UserStorage {
         List<User> userList = new ArrayList<>();
         if (!users.isEmpty()) {
             for (User u : users.values())
-            userList.add(u);
+                userList.add(u);
         }
         return userList;
     }
@@ -56,7 +56,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(long id) {
-        if (id < 1)  {throw new NotFoundException("Введено некорректное значение id");}
+        if (id < 1) {
+            throw new NotFoundException("Введено некорректное значение id");
+        }
         return users.get(id);
     }
 

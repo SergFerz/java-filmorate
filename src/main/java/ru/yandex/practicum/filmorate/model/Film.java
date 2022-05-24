@@ -16,11 +16,9 @@ import java.util.TreeSet;
 @Value
 public class Film implements Comparable<Film> {
 
-
     @NonFinal
     @Setter
     long id;
-
 
     @NotEmpty
     String name;
@@ -36,8 +34,7 @@ public class Film implements Comparable<Film> {
     @Setter
     int rate;
 
-
-     Set<Long> likes = new HashSet<>();
+    Set<Long> likes = new HashSet<>();
 
     public int getRate() {
         return likes.size();

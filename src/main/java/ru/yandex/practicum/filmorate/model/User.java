@@ -14,35 +14,31 @@ import java.util.TreeSet;
 @Value
 public class User {
 
-     //@Positive
-     @NonFinal
-     @Setter
-     //@NotEmpty
-     long id;
+    @NonFinal
+    @Setter
+    long id;
 
-     //@NotEmpty
-     @Email
-     String email;
+    @Email
+    String email;
 
-     @NotEmpty
-     String login;
+    @NotEmpty
+    String login;
 
-     @NonFinal
-     @Setter
-     String name;
+    @NonFinal
+    @Setter
+    String name;
 
-     //@NotEmpty
-     @Past
-     LocalDate birthday;
+    @Past
+    LocalDate birthday;
 
-     @NotNull
-     Set<Long> friends = new HashSet<>();
+    @NotNull
+    Set<Long> friends = new HashSet<>();
 
-     public void addFriend(long id) {
-         friends.add(id);
-     }
+    public void addFriend(long id) {
+        friends.add(id);
+    }
 
-     public void deleteFriend(long id) {
-          friends.remove(id);
-     }
+    public void deleteFriend(long id) {
+        friends.remove(id);
+    }
 }

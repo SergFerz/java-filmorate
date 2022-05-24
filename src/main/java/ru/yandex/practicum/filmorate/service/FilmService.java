@@ -26,7 +26,9 @@ public class FilmService {
         return (List<Film>) filmStorage.getAllFilms();
     }
 
-    public Film create(Film film) {return filmStorage.create(film);}
+    public Film create(Film film) {
+        return filmStorage.create(film);
+    }
 
     public Film update(Film film) {
         return filmStorage.update(film);
@@ -76,5 +78,7 @@ public class FilmService {
         return films;
     }
 
-    public Film getFilmById(long id) {return filmStorage.getFilmById(id);}
+    public Film getFilmById(long id) {
+        return filmStorage.getFilmById(id);
+    }
 }
