@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FilmService {
 
     private final FilmStorage filmStorage;
@@ -27,10 +30,16 @@ public class FilmService {
     }
 
     public Film create(Film film) {
+        validatefilm(film);
         return filmStorage.create(film);
     }
 
     public Film update(Film film) {
+        if (film.getId() < 0) {
+            log.debug("Введено некорректное значение id");
+            throw new NotFoundException("Введено некорректное значение id");
+        }
+        validatefilm(film);
         return filmStorage.update(film);
     }
 
@@ -38,7 +47,7 @@ public class FilmService {
         if (idFilm < 1 || idUser < 1) {
             throw new NotFoundException("Введено некорректное значение id");
         }
-        Film film = filmStorage.getFilmById(idFilm);
+        Film film = getFilmById(idFilm);
         film.getLikes().add(idUser);
         filmStorage.update(film);
         return film;
@@ -48,7 +57,7 @@ public class FilmService {
         if (idFilm < 1 || idUser < 1) {
             throw new NotFoundException("Введено некорректное значение id");
         }
-        Film film = filmStorage.getFilmById(idFilm);
+        Film film = getFilmById(idFilm);
         Set<Long> likes = film.getLikes();
         if (!likes.contains(idUser)) {
             throw new NotFoundException("Введено некорректное значение id");
@@ -79,6 +88,28 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
-        return filmStorage.getFilmById(id);
+        if (id < 1) {
+            throw new NotFoundException("Введено некорректное значение id");
+        }
+        Film film = filmStorage.getFilmById(id)
+                .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
+        return film;
+    }
+
+    private Film validatefilm(Film film) {
+        if (film.getName().isBlank()) {
+            throw new ValidationException("Описание не должно превышать 200 символов");
+        } else if (film.getDescription().length() > 200) {
+            log.debug("Описание не должно превышать 200 символов");
+            throw new ValidationException("Описание не должно превышать 200 символов");
+        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            log.debug("Введен некорректный день релиза");
+            throw new ValidationException("Введен некорректный день релиза");
+        } else if (film.getDuration() < 0) {
+            throw new ValidationException("Введено некорректное значение duration");
+        } else if (film.getId() == 0) {
+            film.setId(filmStorage.getNextId());
+        }
+        return film;
     }
 }

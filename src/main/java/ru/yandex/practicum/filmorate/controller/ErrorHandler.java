@@ -26,11 +26,11 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final RuntimeException ex) {
+    public ErrorResponse handleThrowable(final Throwable ex) {
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 
-    public class ErrorResponse {
+    private class ErrorResponse {
         private String error;
 
         public ErrorResponse(String error) {

@@ -1,11 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
+@Slf4j
 public class UserService {
 
     private final UserStorage userStorage;
@@ -24,23 +27,34 @@ public class UserService {
     }
 
     public User create(User user) {
+        validateUser(user);
         return userStorage.create(user);
     }
 
     public User update(User user) {
+        if (user.getId() < 1) {
+            log.debug("Введено некорректное значение id");
+            throw new NotFoundException("Введено некорректное значение id");
+        }
+        validateUser(user);
         return userStorage.update(user);
     }
 
     public User getUserById(long id) {
-        return userStorage.getUserById(id);
+        if (id < 1) {
+            throw new NotFoundException("Введено некорректное значение id");
+        }
+        User user = userStorage.getUserById(id)
+                .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
+        return user;
     }
 
     public User addFriend(long idUser, long idFriend) {
         if (idUser < 0 || idFriend < 0) {
             throw new NotFoundException("Введено некорректное значение id");
         }
-        User user = userStorage.getUserById(idUser);
-        User friend = userStorage.getUserById(idFriend);
+        User user = getUserById(idUser);
+        User friend = getUserById(idFriend);
         user.addFriend(idFriend);
         friend.addFriend(idUser);
         userStorage.update(user);
@@ -52,8 +66,8 @@ public class UserService {
         if (idUser < 0 || idFriend < 0) {
             throw new NotFoundException("Введено некорректное значение id");
         }
-        User user = userStorage.getUserById(idUser);
-        User friend = userStorage.getUserById(idFriend);
+        User user = getUserById(idUser);
+        User friend = getUserById(idFriend);
         user.deleteFriend(idFriend);
         friend.deleteFriend(idUser);
         userStorage.update(user);
@@ -65,8 +79,8 @@ public class UserService {
         if (id < 0) {
             throw new NotFoundException("Введено некорректное значение id");
         }
-        return userStorage.getUserById(id).getFriends().stream()
-                .map(userStorage::getUserById)
+        return getUserById(id).getFriends().stream()
+                .map(this::getUserById)
                 .collect(Collectors.toList());
     }
 
@@ -74,13 +88,29 @@ public class UserService {
         if (idUser1 < 0 || idUser2 < 0) {
             throw new NotFoundException("Введено некорректное значение id");
         }
-        User user1 = userStorage.getUserById(idUser1);
-        User user2 = userStorage.getUserById(idUser2);
+        User user1 = getUserById(idUser1);
+        User user2 = getUserById(idUser2);
         Set<Long> commonFriendsId = new HashSet<>(user1.getFriends());
         commonFriendsId.retainAll(user2.getFriends());
         return commonFriendsId.stream()
-                .map(userStorage::getUserById)
+                .map(this::getUserById)
                 .collect(Collectors.toList());
+    }
 
+    private User validateUser(User user) {
+        if (user.getLogin().contains(" ")) {
+            log.debug("Введен некорректный логин");
+            throw new ValidationException("Введен некорректный логин");
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.debug("Введен некорректный день рождения");
+            throw new ValidationException("Введен некорректный день рождения");
+        }
+        if (user.getId() == 0) {
+            user.setId(userStorage.getNextId());
+        }
+        if (user.getName().isEmpty() || user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+        return user;
     }
 }
