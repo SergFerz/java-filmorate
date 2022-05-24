@@ -43,9 +43,28 @@ class InMemoryUserStorageTest {
 
     @Test
     void test2_createValidUserResponseShouldBeOk()  {
-        User user = new User(2L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
-        userController.create(user);
-        //userStorage.create(user);
-        assertEquals(user,userController.findUserById(2L));
+        User user1 = new User(1L, "qrty@yandex.ru", "test1", "Mark", LocalDate.of(1995, 12, 10));
+        userController.create(user1);
+        User user2 = new User(2L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
+        userController.create(user2);
+        User user3 = new User(3L, "qrty@yandex.ru", "test3", "Liza", LocalDate.of(1997, 12, 10));
+        userController.create(user3);
+        User user4 = new User(4L, "qwedftgjjdrty@mail.ru", "testLogin4", "Alex", LocalDate.of(2002, 3, 17));
+        userController.create(user4);
+
+        userController.addFriend(1, 2);
+        userController.addFriend(1, 3);
+        userController.addFriend(1, 4);
+        userController.addFriend(2, 3);
+        userController.addFriend(2, 4);
+        System.out.println(userController.getAllFriends(2));
+        //System.out.println(user2.getFriends());
+        //System.out.println(userController.getCommonFriends(1L, 2L));
+
+        assertEquals(2,userController.getCommonFriends(1L, 2L).size());
+        assertEquals(user2,userController.findUserById(2L));
+        assertEquals(4,userController.getAllUsers().size());
     }
+
+
 }
