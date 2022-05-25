@@ -35,18 +35,12 @@ public class FilmService {
     }
 
     public Film update(Film film) {
-        if (film.getId() < 0) {
-            log.debug("Введено некорректное значение id");
-            throw new NotFoundException("Введено некорректное значение id");
-        }
+        getFilmById(film.getId());
         validatefilm(film);
         return filmStorage.update(film);
     }
 
     public Film addLike(long idFilm, long idUser) {
-        if (idFilm < 1 || idUser < 1) {
-            throw new NotFoundException("Введено некорректное значение id");
-        }
         Film film = getFilmById(idFilm);
         film.getLikes().add(idUser);
         filmStorage.update(film);
@@ -54,9 +48,6 @@ public class FilmService {
     }
 
     public Film deleteLike(long idFilm, long idUser) {
-        if (idFilm < 1 || idUser < 1) {
-            throw new NotFoundException("Введено некорректное значение id");
-        }
         Film film = getFilmById(idFilm);
         Set<Long> likes = film.getLikes();
         if (!likes.contains(idUser)) {
@@ -68,17 +59,13 @@ public class FilmService {
     }
 
     public Integer getAmountLikes(long idFilm) {
-        if (idFilm < 1) {
-            throw new NotFoundException("Введено некорректное значение id");
-        }
-        List<Film> films = (List<Film>) filmStorage.getAllFilms();
-        Film film = films.get(Math.toIntExact(idFilm));
+        Film film = getFilmById(idFilm);
         return film.getLikes().size();
     }
 
     public List<Film> getTopFilm(Integer count) {
         if (count < 1) {
-            throw new NotFoundException("Введено некорректное значение count");
+            throw new ValidationException("Введено некорректное значение count");
         }
         List<Film> films = (List<Film>) filmStorage.getAllFilms();
         films = films.stream().sorted((f1, f2) -> f1.compareTo(f2))
@@ -88,9 +75,6 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
-        if (id < 1) {
-            throw new NotFoundException("Введено некорректное значение id");
-        }
         Film film = filmStorage.getFilmById(id)
                 .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
         return film;
@@ -107,8 +91,6 @@ public class FilmService {
             throw new ValidationException("Введен некорректный день релиза");
         } else if (film.getDuration() < 0) {
             throw new ValidationException("Введено некорректное значение duration");
-        } else if (film.getId() == 0) {
-            film.setId(filmStorage.getNextId());
         }
         return film;
     }

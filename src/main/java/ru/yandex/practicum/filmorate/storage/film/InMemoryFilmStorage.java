@@ -31,6 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
+        film.setId(getNextId());
         films.put(film.getId(), film);
         log.debug("Добавлен новый фильм");
         return film;
@@ -45,6 +46,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> getFilmById(long id) {
-        return Optional.of(films.get(id));
+        return Optional.ofNullable(films.get(id));
     }
 }

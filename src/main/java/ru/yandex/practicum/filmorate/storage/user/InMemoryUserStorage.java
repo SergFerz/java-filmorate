@@ -31,6 +31,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User create(User user) {
+        user.setId(getNextId());
         users.put(user.getId(), user);
         log.debug("Добавлен новый пользователь");
         return user;
@@ -45,6 +46,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Optional<User> getUserById(long id) {
-        return Optional.of(users.get(id));
+        return Optional.ofNullable(users.get(id));
     }
 }
