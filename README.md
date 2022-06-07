@@ -1,17 +1,18 @@
 # java-filmorate
 Template repository for Filmorate project.
-![This is an image](C:\Users\Serg\dev\filmorate\Screenshot_57.png)
 
-films - film_genre: у одного фильма может быть много записей в жанрах (по тз)
+![Diagram](https://github.com/SergFerz/java-filmorate/blob/add-friends-likes/Screenshot_57.png)
 
-film_genre - genre: один к одному
++ films - film_genre: у одного фильма может быть много записей в жанрах (по тз)
 
-films - rating_mpa: один к одному
++ film_genre - genre: один к одному
 
-films - likes: один ко многим (один фильм много лайков от юзеров)
++ films - rating_mpa: один к одному
 
-users - likes: один ко многим (один юзер много лайков к фильмам)
++ films - likes: один ко многим (один фильм много лайков от юзеров)
 
-users - friends: один ко многим (один юзер много друзей)
++ users - likes: один ко многим (один юзер много лайков к фильмам)
 
-причем в таблице friends внешние ключи на таблицу users у обоих полей (uiser_id, friend_id)
++ users - friends: один ко многим (один юзер много друзей)
+
+  + причем в таблице friends внешние ключи на таблицу users у обоих полей (user_id, friend_id)
