@@ -1,5 +1,5 @@
-package ru.yandex.practicum.filmorate.controller;
 
+package ru.yandex.practicum.filmorate.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.bytebuddy.asm.Advice;
@@ -34,7 +34,7 @@ public class UserControllerTest {
 
     @Test
     void test1_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(1, "qwerty@mail.ru", "test", "Luce", LocalDate.of(2000, 1, 1));
+        User user = new User(1L, "qwerty@mail.ru", "test", "Luce", LocalDate.of(2000, 1, 1));
         String body = mapper.writeValueAsString(user);
         this.mockMvc.perform(post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -52,31 +52,31 @@ public class UserControllerTest {
     private static Stream<Arguments> invalidUserSource() {
         return Stream.of(
                 Arguments.of("Invalid birthday",
-                        new User(1,
+                        new User(1L,
                                 "qwerty@mail.ru",
                                 "test",
                                 "Lucy",
                                 LocalDate.of(2100, 1, 1))),
                 Arguments.of("Invalid email",
-                        new User(1,
+                        new User(1L,
                                 "qwertymail.ru",
                                 "test",
                                 "Lucy",
                                 LocalDate.of(2000, 1, 1))),
                 Arguments.of("Invalid id",
-                        new User(-1,
+                        new User(-1L,
                                 "qwerty@mail.ru",
                                 "test",
                                 "Lucy",
                                 LocalDate.of(2000, 1, 1))),
                 Arguments.of("Invalid login",
-                        new User(1,
+                        new User(1L,
                                 "qwerty@mail.ru",
                                 "te st",
                                 "Lucy",
                                 LocalDate.of(2000, 1, 1))),
-                Arguments.of("Invalid user = null",
-                        null)
+                Arguments.of("Invalid user = null", null)
         );
-    }
+   }
 }
+
