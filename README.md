@@ -1,7 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-<img alt="Diagram" src="C:\Users\Serg\dev\java-filmorate\DbDiagramFilmorate.png"/>
+![Diagram](C:\Users\Serg\dev\java-filmorate\DbDiagramFilmorate.png)
 
 + __films - film_genre:__ у одного фильма может быть много записей в жанрах (по тз)
 
