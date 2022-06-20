@@ -14,5 +14,8 @@ public interface UserStorage {
 
     Optional<User> getUserById(long id);
 
-    long getNextId();
+    User addFriend(long idUser, long idFriend, String status);
+
+
+    public User deleteFriend(long idUser, long idFriend);
 }

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -19,6 +20,8 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private final FilmStorage filmStorage;
+    private final LikeDao likeDao;
+    private final UserService userService;
 
     public List<Film> getAllFilms() {
         return (List<Film>) filmStorage.getAllFilms();
@@ -36,37 +39,29 @@ public class FilmService {
     }
 
     public Film addLike(long idFilm, long idUser) {
+        getFilmById(idFilm);
+        userService.getUserById(idUser);
+        likeDao.addLike(idFilm, idUser);
         Film film = getFilmById(idFilm);
-        film.getLikes().add(idUser);
-        filmStorage.update(film);
         return film;
     }
 
     public Film deleteLike(long idFilm, long idUser) {
-        Film film = getFilmById(idFilm);
-        Set<Long> likes = film.getLikes();
-        if (!likes.contains(idUser)) {
-            throw new NotFoundException("Введено некорректное значение id");
-        }
-        film.deleteLike(idUser);
-        filmStorage.update(film);
-        return film;
-    }
-
-    public Integer getAmountLikes(long idFilm) {
-        Film film = getFilmById(idFilm);
-        return film.getLikes().size();
+        userService.getUserById(idUser);
+        getFilmById(idFilm);
+        likeDao.deleteLike(idFilm, idUser);
+        return getFilmById(idFilm);
     }
 
     public List<Film> getTopFilm(Integer count) {
         if (count < 1) {
             throw new ValidationException("Введено некорректное значение count");
         }
-        List<Film> films = (List<Film>) filmStorage.getAllFilms();
-        films = films.stream().sorted((f1, f2) -> f1.compareTo(f2))
+        List<Film> films = getAllFilms();
+        films.sort(Film::compareTo);
+        return films.stream()
                 .limit(count)
                 .collect(Collectors.toList());
-        return films;
     }
 
     public Film getFilmById(long id) {

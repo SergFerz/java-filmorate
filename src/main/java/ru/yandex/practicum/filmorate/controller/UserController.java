@@ -11,6 +11,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@ControllerAdvice
 public class UserController {
 
     private final UserService userService;

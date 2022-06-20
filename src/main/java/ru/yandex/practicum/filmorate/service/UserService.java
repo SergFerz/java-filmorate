@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,23 +43,17 @@ public class UserService {
     }
 
     public User addFriend(long idUser, long idFriend) {
-        User user = getUserById(idUser);
-        User friend = getUserById(idFriend);
-        user.addFriend(idFriend);
-        friend.addFriend(idUser);
-        userStorage.update(user);
-        userStorage.update(friend);
-        return user;
+        getUserById(idUser);
+        getUserById(idFriend);
+        if (getAllFriends(idFriend).stream().map(User::getId).anyMatch( x -> x.equals(idUser))) {
+            return userStorage.addFriend(idUser, idFriend, "CONFIRM");
+        } else return userStorage.addFriend(idUser, idFriend, "UNCONFIRM");
     }
 
     public User deleteFriend(long idUser, long idFriend) {
-        User user = getUserById(idUser);
-        User friend = getUserById(idFriend);
-        user.deleteFriend(idFriend);
-        friend.deleteFriend(idUser);
-        userStorage.update(user);
-        userStorage.update(friend);
-        return user;
+        getUserById(idUser);
+        getUserById(idFriend);
+        return userStorage.deleteFriend(idUser, idFriend);
     }
 
     public List<User> getAllFriends(long id) {
@@ -93,4 +86,3 @@ public class UserService {
         return user;
     }
 }
-//for review

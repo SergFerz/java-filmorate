@@ -10,6 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,22 +36,16 @@ public class Film implements Comparable<Film> {
     @Setter
     int rate;
 
-    Set<Long> likes = new HashSet<>();
+    Mpa mpa;
 
-    public int getRate() {
-        return likes.size();
-    }
+    @NonFinal
+    @Setter
+    Set<Genre> genres;
 
-    public void addLikes(Long like) {
-        likes.add(like);
-    }
-
-    public void deleteLike(Long like) {
-        likes.remove(like);
-    }
+    Set<Long> likes;
 
     @Override
     public int compareTo(Film o) {
-        return -(this.getRate() - o.getRate());
+        return o.getLikes().size() - this.likes.size();
     }
 }
