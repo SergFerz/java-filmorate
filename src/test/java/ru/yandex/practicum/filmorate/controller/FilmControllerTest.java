@@ -1,3 +1,4 @@
+/*
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +75,8 @@ class FilmControllerTest {
     }
 
 
-    /*private static Stream<Arguments> invalidFilmSource() {
+    */
+/*private static Stream<Arguments> invalidFilmSource() {
         return Stream.of(
                 Arguments.of("Invalid releaseDate",
                         new Film(1L,
@@ -111,5 +113,6 @@ class FilmControllerTest {
                                 -125))
                 //Arguments.of("Invalid film = null", null)
         );
-    }*/
-}
+    }*//*
+
+}*/

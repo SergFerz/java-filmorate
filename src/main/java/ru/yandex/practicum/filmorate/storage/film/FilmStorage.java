@@ -13,6 +13,4 @@ public interface FilmStorage {
     Film update(Film film);
 
     Optional<Film> getFilmById(long id);
-
-    long getNextId();
 }

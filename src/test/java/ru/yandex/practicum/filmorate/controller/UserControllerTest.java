@@ -48,7 +48,6 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-
     private static Stream<Arguments> invalidUserSource() {
         return Stream.of(
                 Arguments.of("Invalid birthday",
