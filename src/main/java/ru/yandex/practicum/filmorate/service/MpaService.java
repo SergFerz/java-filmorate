@@ -18,7 +18,7 @@ public class MpaService {
     private final MpaDao mpaDao;
 
     public List<Mpa> getAllMpa() {
-        return (List<Mpa>) mpaDao.getAllMpa();
+        return mpaDao.getAllMpa();
     }
 
     public Mpa getMpaById(int id) {

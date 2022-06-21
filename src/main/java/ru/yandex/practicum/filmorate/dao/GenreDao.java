@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GenreDao {
-    Collection<Genre> getAllGenres();
+    List<Genre> getAllGenres();
     Optional<Genre> getGenreById(int id);
 }

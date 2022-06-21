@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -37,23 +38,24 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        User user = userStorage.getUserById(id)
+        return userStorage.getUserById(id)
                 .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
-        return user;
     }
 
-    public User addFriend(long idUser, long idFriend) {
+    public void addFriend(long idUser, long idFriend) {
         getUserById(idUser);
         getUserById(idFriend);
         if (getAllFriends(idFriend).stream().map(User::getId).anyMatch( x -> x.equals(idUser))) {
-            return userStorage.addFriend(idUser, idFriend, "CONFIRM");
-        } else return userStorage.addFriend(idUser, idFriend, "UNCONFIRM");
+            userStorage.addFriend(idUser, idFriend, "CONFIRM");
+        } else {
+            userStorage.addFriend(idUser, idFriend, "UNCONFIRM");
+        }
     }
 
-    public User deleteFriend(long idUser, long idFriend) {
+    public void deleteFriend(long idUser, long idFriend) {
         getUserById(idUser);
         getUserById(idFriend);
-        return userStorage.deleteFriend(idUser, idFriend);
+        userStorage.deleteFriend(idUser, idFriend);
     }
 
     public List<User> getAllFriends(long id) {

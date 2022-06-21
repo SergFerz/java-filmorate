@@ -24,7 +24,7 @@ public class FilmService {
     private final UserService userService;
 
     public List<Film> getAllFilms() {
-        return (List<Film>) filmStorage.getAllFilms();
+        return filmStorage.getAllFilms();
     }
 
     public Film create(Film film) {
@@ -72,7 +72,7 @@ public class FilmService {
 
     private Film validateFilm(Film film) {
         if (film.getName().isBlank()) {
-            throw new ValidationException("Описание не должно превышать 200 символов");
+            throw new ValidationException("Описание не должно быть пустым");
         } else if (film.getDescription().length() > 200) {
             log.debug("Описание не должно превышать 200 символов");
             throw new ValidationException("Описание не должно превышать 200 символов");
