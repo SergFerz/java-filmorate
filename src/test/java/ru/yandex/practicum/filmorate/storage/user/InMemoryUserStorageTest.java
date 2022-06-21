@@ -51,17 +51,12 @@ class InMemoryUserStorageTest {
         userController.create(user3);
         User user4 = new User(4L, "qwedftgjjdrty@mail.ru", "testLogin4", "Alex", LocalDate.of(2002, 3, 17));
         userController.create(user4);
-
         userController.addFriend(1, 2);
         userController.addFriend(1, 3);
         userController.addFriend(1, 4);
         userController.addFriend(2, 3);
         userController.addFriend(2, 4);
-        System.out.println(userController.getAllFriends(2));
-        //System.out.println(user2.getFriends());
-        //System.out.println(userController.getCommonFriends(1L, 2L));
-
-        assertEquals(2,userController.getCommonFriends(1L, 2L).size());
+        System.out.println(userController.getAllFriends(2));        assertEquals(2,userController.getCommonFriends(1L, 2L).size());
         assertEquals(user2,userController.findUserById(2L));
         assertEquals(4,userController.getAllUsers().size());
     }
