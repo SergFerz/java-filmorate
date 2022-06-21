@@ -24,7 +24,7 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public List<Genre> getAllGenres() {
-        String sql = "select * from genres";
+        String sql = "SELECT * FROM genres";
         List<Genre> genreList = jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs));
         log.debug("Текущее количество жанров: {}", genreList.size());
         return genreList;
@@ -32,7 +32,7 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Optional<Genre> getGenreById(int id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from genres where id = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM genres WHERE id = ?", id);
         if (userRows.next()) {
             Genre genre = new Genre(
                     userRows.getInt("id"),

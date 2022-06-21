@@ -33,11 +33,13 @@ public class FilmDbStorage implements FilmStorage{
     }
 
     @Override
-    public Collection<Film> getAllFilms() {
-        Collection<Film> films = new ArrayList<>(Collections.emptyList());
+    public List<Film> getAllFilms() {
+        List<Film> films = new ArrayList<>();
         SqlRowSet filmIdRows = jdbcTemplate.queryForRowSet("SELECT film_id FROM films");
         while (filmIdRows.next()) {
-            films.add(getFilmById(filmIdRows.getInt("film_id")).get());
+            if (getFilmById(filmIdRows.getInt("film_id")).isPresent()) {
+                films.add(getFilmById(filmIdRows.getInt("film_id")).get());
+            } else continue;
         }
         return films;
     }
@@ -59,7 +61,9 @@ public class FilmDbStorage implements FilmStorage{
                     forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
                             num.longValue(), genre.getId()));
         }
-        return getFilmById(num.longValue()).get();
+        if (getFilmById(num.longValue()).isPresent()) {
+            return getFilmById(num.longValue()).get();
+        } else return null;
     }
 
     @Override
@@ -76,8 +80,8 @@ public class FilmDbStorage implements FilmStorage{
             return getFilmById(film.getId()).get();
         } else {
             jdbcTemplate.update("DELETE FROM film_genre WHERE film_id=?", film.getId());
-            film.getGenres().stream().
-                    forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
+            film.getGenres().stream()
+                    .forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
                     film.getId(), genre.getId()));
         }
         Film film1 = getFilmById(film.getId()).get();
@@ -88,7 +92,7 @@ public class FilmDbStorage implements FilmStorage{
     @Override
     public Optional<Film> getFilmById(long id) {
         Set<Genre> genres = new HashSet<>();
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select * from films where film_id = ?", id);
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM films WHERE film_id = ?", id);
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM film_genre WHERE film_id = ?", id);
         while (genreRows.next()) {
             genres.add(genreDao.getGenreById(genreRows.getInt("id")).get());

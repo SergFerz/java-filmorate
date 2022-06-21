@@ -22,7 +22,7 @@ import java.util.Set;
 @Component
 @Primary
 @Slf4j
-public class UserDbStorage implements UserStorage{
+public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -31,8 +31,8 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public Collection<User> getAllUsers() {
-        String sql = "select * from users";
+    public List<User> getAllUsers() {
+        String sql = "SELECT * FROM users";
         List<User> userList = jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs));
         log.debug("Текущее количество пользователей: {}", userList.size());
         return userList;
@@ -48,7 +48,6 @@ public class UserDbStorage implements UserStorage{
                 .addValue("name", user.getName())
                 .addValue("birthday", user.getBirthday());
         Number num = jdbcInsert.executeAndReturnKey(parameters);
-        //user.setId(num.longValue());
         return getUserById(num.longValue()).get();
     }
 
@@ -65,7 +64,7 @@ public class UserDbStorage implements UserStorage{
 
     @Override
     public Optional<User> getUserById(long id) {
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet("select * from users where user_id = ?", id);
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT * FROM users WHERE user_id = ?", id);
         SqlRowSet friendRows = jdbcTemplate.queryForRowSet("SELECT * FROM friends WHERE user_id=?", id);
         if (userRows.next()) {
             User user = new User(
@@ -87,16 +86,14 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public User addFriend(long idUser, long idFriend, String status) {
+    public void addFriend(long idUser, long idFriend, String status) {
         jdbcTemplate.update("INSERT INTO friends(user_id, friend_id, status) VALUES (?, ?, ?);", idUser, idFriend, status);
-        return getUserById(idUser).get();
     }
 
     @Override
-    public User deleteFriend(long idUser, long idFriend) {
+    public void deleteFriend(long idUser, long idFriend) {
         jdbcTemplate.update("DELETE FROM friends WHERE user_id=? AND friend_id=?;", idUser, idFriend);
-        return getUserById(idUser).get();
-    };
+    }
 
     private User makeUser(ResultSet rs) throws SQLException {
         return new User(

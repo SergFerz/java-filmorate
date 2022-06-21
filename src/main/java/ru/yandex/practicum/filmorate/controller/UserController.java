@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -38,12 +39,12 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
-    public void addFriend(@Valid @PathVariable long id,@PathVariable long friendId) {
+    public void addFriend(@Valid @PathVariable long id, @PathVariable long friendId) {
         userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/users/{id}/friends/{friendId}")
-    public void deleteFriend(@Valid @PathVariable long id,@PathVariable long friendId) {
+    public void deleteFriend(@Valid @PathVariable long id, @PathVariable long friendId) {
         userService.deleteFriend(id, friendId);
     }
 
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@Valid @PathVariable long id,@PathVariable long otherId) {
+    public List<User> getCommonFriends(@Valid @PathVariable long id, @PathVariable long otherId) {
         return userService.getCommonFriends(id, otherId);
     }
 }
