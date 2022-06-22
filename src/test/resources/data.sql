@@ -25,6 +25,12 @@ VALUES ( 'user1@gmail.com', 'user1', 'name1',  '2001-01-01');
 INSERT INTO users (email, login, name, birthday)
 VALUES ( 'user2@gmail.com', 'user2', 'name2',  '2002-02-02');
 
+INSERT INTO users (email, login, name, birthday)
+VALUES ( 'user3@gmail.com', 'user3', 'name3',  '2003-03-03');
+
+INSERT INTO users (email, login, name, birthday)
+VALUES ( 'user4@gmail.com', 'user4', 'name4',  '2004-04-04');
+
 
 
 

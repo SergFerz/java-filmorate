@@ -78,7 +78,8 @@ public class UserService {
         if (user.getLogin().contains(" ")) {
             log.debug("Введен некорректный логин");
             throw new ValidationException("Введен некорректный логин");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
             log.debug("Введен некорректный день рождения");
             throw new ValidationException("Введен некорректный день рождения");
         }
