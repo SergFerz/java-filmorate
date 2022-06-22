@@ -21,7 +21,7 @@ class UserDbStorageTest {
     @Test
     void getAllUsersTest() {
         Collection<User> users = userStorage.getAllUsers();
-        assertEquals(2, users.size());
+        assertEquals(4, users.size());
     }
 
     @Test

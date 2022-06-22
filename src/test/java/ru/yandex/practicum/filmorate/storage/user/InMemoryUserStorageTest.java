@@ -30,36 +30,52 @@ class InMemoryUserStorageTest {
     @Autowired
     InMemoryUserStorage userStorage;
 
-    @Autowired
-    UserController userController;
-
     @Test
     void test1_createValidUserResponseShouldBeOk() throws Exception {
-        User user = new User(1L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
+        User user = new User(1L,
+                "qwerty@mail.ru",
+                "testLogin",
+                "Luce",
+                LocalDate.of(2000, 1, 1));
         String body = mapper.writeValueAsString(user);
-        this.mockMvc.perform(post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post("/users")
+                        .content(body)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void test2_createValidUserResponseShouldBeOk()  {
-        User user1 = new User(1L, "qrty@yandex.ru", "test1", "Mark", LocalDate.of(1995, 12, 10));
-        userController.create(user1);
-        User user2 = new User(2L, "qwerty@mail.ru", "testLogin", "Luce", LocalDate.of(2000, 1, 1));
-        userController.create(user2);
-        User user3 = new User(3L, "qrty@yandex.ru", "test3", "Liza", LocalDate.of(1997, 12, 10));
-        userController.create(user3);
-        User user4 = new User(4L, "qwedftgjjdrty@mail.ru", "testLogin4", "Alex", LocalDate.of(2002, 3, 17));
-        userController.create(user4);
-        userController.addFriend(1, 2);
-        userController.addFriend(1, 3);
-        userController.addFriend(1, 4);
-        userController.addFriend(2, 3);
-        userController.addFriend(2, 4);
-        System.out.println(userController.getAllFriends(2));        assertEquals(2,userController.getCommonFriends(1L, 2L).size());
-        assertEquals(user2,userController.findUserById(2L));
-        assertEquals(4,userController.getAllUsers().size());
+    void test2_createValidUserResponseShouldBeOk() {
+        User user1 = new User(1L,
+                "qrty@yandex.ru",
+                "test1",
+                "Mark",
+                LocalDate.of(1995, 12, 10));
+        userStorage.create(user1);
+        User user2 = new User(2L,
+                "qwerty@mail.ru",
+                "testLogin",
+                "Luce",
+                LocalDate.of(2000, 1, 1));
+        userStorage.create(user2);
+        User user3 = new User(3L,
+                "qrty@yandex.ru",
+                "test3",
+                "Liza",
+                LocalDate.of(1997, 12, 10));
+        userStorage.create(user3);
+        User user4 = new User(4L,
+                "qwedftgjjdrty@mail.ru",
+                "testLogin4",
+                "Alex",
+                LocalDate.of(2002, 3, 17));
+        userStorage.create(user4);
+        userStorage.addFriend(1, 2, "UNCONFIRM");
+        userStorage.addFriend(1, 3, "UNCONFIRM");
+        userStorage.addFriend(1, 4, "UNCONFIRM");
+        userStorage.addFriend(2, 3, "UNCONFIRM");
+        userStorage.addFriend(2, 4, "UNCONFIRM");
+        assertEquals(user2, userStorage.getUserById(2).get());
+        assertEquals(4, userStorage.getAllUsers().size());
     }
-
-
 }
