@@ -1,18 +1,44 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.NonFinal;
+import org.jetbrains.annotations.NotNull;
 
+
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
-@Data
-@AllArgsConstructor
+@Value
 public class User {
 
-    private final int id;
-    private final String email;
-    private final String login;
-    private String name;
-    private final LocalDate birthday;
+    @NonFinal
+    @Setter
+    long id;
 
+    @Email
+    String email;
+
+    @NotEmpty
+    String login;
+
+    @NonFinal
+    @Setter
+    String name;
+
+    @Past
+    LocalDate birthday;
+
+    @NotNull
+    Set<Long> friends = new HashSet<>();
+
+    public void addFriend(long id) {
+        friends.add(id);
+    }
+
+    public void deleteFriend(long id) {
+        friends.remove(id);
+    }
 }
