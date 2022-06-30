@@ -57,30 +57,6 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.apache.mahout/mahout-mr -->
-		<dependency>
-			<groupId>org.apache.mahout</groupId>
-			<artifactId>mahout-mr</artifactId>
-			<version>0.13.0</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.apache.mahout/mahout-math -->
-		<dependency>
-			<groupId>org.apache.mahout</groupId>
-			<artifactId>mahout-math</artifactId>
-			<version>0.13.0</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.apache.mahout/mahout-integration -->
-		<dependency>
-			<groupId>org.apache.mahout</groupId>
-			<artifactId>mahout-integration</artifactId>
-			<version>0.13.0</version>
-		</dependency>
-
-
 	</dependencies>
 	<build>
 		<plugins>
