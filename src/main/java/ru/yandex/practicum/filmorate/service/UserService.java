@@ -2,14 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
+    //private final Recommender recommender;
+    //private final MyRecommender recommender;
+    private final Recommender recommender;
+    private final FilmStorage filmStorage;
 
     public List<User> getAllUsers() {
         return (List<User>) userStorage.getAllUsers();
@@ -45,7 +50,7 @@ public class UserService {
     public void addFriend(long idUser, long idFriend) {
         getUserById(idUser);
         getUserById(idFriend);
-        if (getAllFriends(idFriend).stream().map(User::getId).anyMatch( x -> x.equals(idUser))) {
+        if (getAllFriends(idFriend).stream().map(User::getId).anyMatch(x -> x.equals(idUser))) {
             userStorage.addFriend(idUser, idFriend, "CONFIRM");
         } else {
             userStorage.addFriend(idUser, idFriend, "UNCONFIRM");
@@ -87,5 +92,16 @@ public class UserService {
             user.setName(user.getLogin());
         }
         return user;
+    }
+
+    public List<Film> getRecommendations(long id) {
+        List<Film> films = new ArrayList<>();
+        Set<Long> filmsId = recommender.getRecommendations(id);
+        if (!filmsId.isEmpty()) {
+            for (Long i : filmsId) {
+                films.add(filmStorage.getFilmById(i).get());
+            }
+        }
+        return films;
     }
 }

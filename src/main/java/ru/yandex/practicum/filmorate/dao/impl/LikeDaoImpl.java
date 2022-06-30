@@ -28,4 +28,9 @@ public class LikeDaoImpl implements LikeDao {
     public void deleteLike(long idFilm, long idUser) {
         jdbcTemplate.update("DELETE FROM likes WHERE film_id=? AND user_id=?", idFilm, idUser);
     }
+
+    @Override
+    public void deleteAllLikesFilm(long idFilm) {
+        jdbcTemplate.update("DELETE FROM likes WHERE film_id=?", idFilm);
+    }
 }

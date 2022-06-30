@@ -3,12 +3,14 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -68,6 +70,12 @@ public class FilmService {
         Film film = filmStorage.getFilmById(id)
                 .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
         return film;
+    }
+
+    public void deleteFilmById(long filmId) {
+        getFilmById(filmId);
+        likeDao.deleteAllLikesFilm(filmId);
+        filmStorage.deleteFilmById(filmId);
     }
 
     private Film validateFilm(Film film) {
