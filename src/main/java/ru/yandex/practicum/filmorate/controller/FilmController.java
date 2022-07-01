@@ -5,11 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -50,6 +49,12 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
+    public List<Film> getFilteredListOfFilms(@RequestParam("count") Optional<Integer> limit,
+                                             @RequestParam("genreId") Optional<Integer> genreId,
+                                             @RequestParam("year") Optional<Integer> year) {
+        return filmService.getFilteredListOfFilms(genreId, year, limit);
+    }
+
     public List<Film> getTopFilm(@RequestParam(defaultValue = "10", required = false, name = "count") Integer count) {
         return filmService.getTopFilm(count);
     }
