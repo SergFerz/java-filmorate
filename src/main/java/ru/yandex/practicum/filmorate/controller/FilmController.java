@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -11,10 +14,13 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
 @ControllerAdvice
+@Slf4j
 public class FilmController {
 
     private final FilmService filmService;
@@ -52,5 +58,11 @@ public class FilmController {
     @GetMapping("/films/popular")
     public List<Film> getTopFilm(@RequestParam(defaultValue = "10", required = false, name = "count") Integer count) {
         return filmService.getTopFilm(count);
+    }
+
+    @DeleteMapping("/films/{filmId}")
+    public ResponseEntity<?> deleteFilm(@PathVariable("filmId") long filmId) {
+        filmService.deleteFilm(filmId);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

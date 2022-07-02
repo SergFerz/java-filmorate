@@ -4,15 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +67,7 @@ public class FilmService {
         films.sort(Film::compareTo);
         return films.stream()
                 .limit(count)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public Film getFilmById(long id) {
@@ -83,5 +89,15 @@ public class FilmService {
             throw new ValidationException("Введено некорректное значение duration");
         }
         return film;
+    }
+
+    private void ensureFilmExists(long filmId) {
+        filmStorage.getFilmById(filmId).orElseThrow(() ->
+                new FilmNotFoundException(filmId));
+    }
+
+    public void deleteFilm(long filmId) {
+        ensureFilmExists(filmId);
+        filmStorage.delete(filmId);
     }
 }
