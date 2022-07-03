@@ -21,6 +21,7 @@ public class Film implements Comparable<Film> {
     @Setter
     long id;
 
+    @Getter
     @NotEmpty
     String name;
 

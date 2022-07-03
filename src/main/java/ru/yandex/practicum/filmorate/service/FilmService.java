@@ -7,8 +7,10 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -89,4 +91,23 @@ public class FilmService {
         }
         return film;
     }
+
+    public Set<Film> search(String text){
+        InMemoryFilmStorage memoryFilmStorage = (InMemoryFilmStorage) filmStorage;
+        Set<Film> searchingFilms = new HashSet<>();
+        for (Object films : memoryFilmStorage.getFilms().values()) {
+            Film film = (Film) films;
+            if (film.getName().contains(text)) {
+                searchingFilms.add(film);
+            }
+        }
+        return searchingFilms;
+    }
+    public List<Film> getAllByRate() {
+        List<Film> films = (List<Film>) filmStorage.getAllFilms();
+        films = films.stream().sorted()
+                .collect(Collectors.toList());
+        return films;
+    }
+
 }
