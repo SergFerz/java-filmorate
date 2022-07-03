@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,10 +13,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Primary
@@ -72,7 +68,7 @@ public class UserDbStorage implements UserStorage {
                     userRows.getString("email"),
                     userRows.getString("login"),
                     userRows.getString("name"),
-                    userRows.getDate("birthday").toLocalDate()
+                    Objects.requireNonNull(userRows.getDate("birthday")).toLocalDate()
             );
             while (friendRows.next()) {
                 user.addFriend(friendRows.getInt("friend_id"));
@@ -105,7 +101,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteUser(long id) {
         jdbcTemplate.update("DELETE FROM users WHERE user_id = ?", id);
     }
 }

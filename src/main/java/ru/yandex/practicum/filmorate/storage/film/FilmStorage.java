@@ -15,5 +15,5 @@ public interface FilmStorage {
 
     Optional<Film> getFilmById(long id);
 
-    void delete(long id);
+    void deleteFilm(long id);
 }

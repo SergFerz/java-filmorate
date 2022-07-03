@@ -8,15 +8,10 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -48,8 +43,7 @@ public class FilmService {
         getFilmById(idFilm);
         userService.getUserById(idUser);
         likeDao.addLike(idFilm, idUser);
-        Film film = getFilmById(idFilm);
-        return film;
+        return getFilmById(idFilm);
     }
 
     public Film deleteLike(long idFilm, long idUser) {
@@ -71,9 +65,8 @@ public class FilmService {
     }
 
     public Film getFilmById(long id) {
-        Film film = filmStorage.getFilmById(id)
+        return filmStorage.getFilmById(id)
                 .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
-        return film;
     }
 
     private Film validateFilm(Film film) {
@@ -98,6 +91,6 @@ public class FilmService {
 
     public void deleteFilm(long filmId) {
         ensureFilmExists(filmId);
-        filmStorage.delete(filmId);
+        filmStorage.deleteFilm(filmId);
     }
 }

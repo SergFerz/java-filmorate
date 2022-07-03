@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -39,7 +37,7 @@ public class FilmDbStorage implements FilmStorage{
         while (filmIdRows.next()) {
             if (getFilmById(filmIdRows.getInt("film_id")).isPresent()) {
                 films.add(getFilmById(filmIdRows.getInt("film_id")).get());
-            } else continue;
+            }
         }
         return films;
     }
@@ -57,13 +55,15 @@ public class FilmDbStorage implements FilmStorage{
                 .addValue("mpa_id", film.getMpa().getId());
         Number num = jdbcInsert.executeAndReturnKey(parameters);
         if (film.getGenres() != null) {
-            film.getGenres().stream().
+            film.getGenres().
                     forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
                             num.longValue(), genre.getId()));
         }
         if (getFilmById(num.longValue()).isPresent()) {
             return getFilmById(num.longValue()).get();
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -80,7 +80,7 @@ public class FilmDbStorage implements FilmStorage{
             return getFilmById(film.getId()).get();
         } else {
             jdbcTemplate.update("DELETE FROM film_genre WHERE film_id=?", film.getId());
-            film.getGenres().stream()
+            film.getGenres()
                     .forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
                     film.getId(), genre.getId()));
         }
@@ -115,7 +115,7 @@ public class FilmDbStorage implements FilmStorage{
             Film film = new Film(
                     filmRows.getLong("film_id"),
                     filmRows.getString("name"),
-                    filmRows.getDate("releaseDate").toLocalDate(),
+                    Objects.requireNonNull(filmRows.getDate("releaseDate")).toLocalDate(),
                     filmRows.getString("description"),
                     filmRows.getInt("duration"),
                     filmRows.getInt("rate"),
@@ -132,7 +132,7 @@ public class FilmDbStorage implements FilmStorage{
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteFilm(long id) {
         jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", id);
     }
 }

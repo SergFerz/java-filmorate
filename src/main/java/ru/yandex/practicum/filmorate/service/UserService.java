@@ -95,6 +95,6 @@ public class UserService {
 
     public void deleteUser(long userId) {
         ensureUserExists(userId);
-        userStorage.delete(userId);
+        userStorage.deleteUser(userId);
     }
 }

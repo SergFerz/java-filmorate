@@ -50,7 +50,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteFilm(long id) {
         films.remove(id);
     }
 }
