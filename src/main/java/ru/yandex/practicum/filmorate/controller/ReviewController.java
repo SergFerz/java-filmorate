@@ -12,7 +12,6 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@ControllerAdvice
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -27,12 +26,12 @@ public class ReviewController {
         return reviewService.updateReview(review);
     }
 
-    @DeleteMapping("/reviews/{id}")
+    @DeleteMapping("/reviews/{reviewId}")
     public void deleteReview(@Valid @PathVariable long id) {
         reviewService.getReviewById(id);
     }
 
-    @GetMapping("/reviews/{id}")
+    @GetMapping("/reviews/{reviewId}")
     public Review getReview(@Valid @PathVariable long id) {
         return reviewService.getReviewById(id);
     }

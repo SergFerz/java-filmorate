@@ -5,7 +5,6 @@ import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Value
@@ -13,7 +12,7 @@ public class Review {
 
     @NonFinal
     @Setter
-    Long id;
+    Long reviewId;
     Long userId;
     Long filmId;
     @NonFinal

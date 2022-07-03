@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.ReviewDao;
 import ru.yandex.practicum.filmorate.exception.*;
@@ -12,14 +15,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
+@AllArgsConstructor
 @Service
-@RequiredArgsConstructor
 public class ReviewService {
+    private ReviewDao reviewDao;
+    private FilmService filmService;
+    private UserService userService;
 
-    private final ReviewDao reviewDao;
-    private final FilmService filmService;
-    private final UserService userService;
-
+    @Autowired
+    public ReviewService(){
+    }
     public Review createReview(Review review) throws NotFoundException{
         validateReview(review);
         return reviewDao.createReview(review);
@@ -92,8 +97,8 @@ public class ReviewService {
 
 
     private void validateReview(Review review) throws NotFoundException {
-        if (review.getId() != null) {
-            validateReviewId(review.getId());
+        if (review.getReviewId() != null) {
+            validateReviewId(review.getReviewId());
         }
         if (filmService.getFilmById(review.getFilmId()) == null) {
             log.warn("film with ID not found");
@@ -113,7 +118,7 @@ public class ReviewService {
     }
 
     private void calculateUseful(Review review) {
-        int defaultUseful = reviewDao.getReviewById(review.getId()).getUseful();
+        int defaultUseful = reviewDao.getReviewById(review.getReviewId()).getUseful();
         if (Objects.nonNull(review.getLikes()) && !review.getLikes().isEmpty()) {
             review.setUseful(defaultUseful + review.getLikes().size());
         } else if (Objects.nonNull(review.getDislikes()) && !review.getDislikes().isEmpty()) {

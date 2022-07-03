@@ -1,8 +1,12 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Review;
 import java.util.List;
 
+
+@Service
 public interface ReviewDao {
     Review createReview(Review review);
 
