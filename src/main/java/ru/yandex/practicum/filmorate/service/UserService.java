@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -48,7 +47,7 @@ public class UserService {
         if (getAllFriends(idFriend).stream().map(User::getId).anyMatch( x -> x.equals(idUser))) {
             userStorage.addFriend(idUser, idFriend, "CONFIRM");
         } else {
-            userStorage.addFriend(idUser, idFriend, "UNCONFIRMED");
+            userStorage.addFriend(idUser, idFriend, "UNCONFIRM ");
         }
     }
 
@@ -89,12 +88,8 @@ public class UserService {
         return user;
     }
 
-    private void ensureUserExists(long userId) {
-        userStorage.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
     public void deleteUser(long userId) {
-        ensureUserExists(userId);
+        getUserById(userId);
         userStorage.deleteUser(userId);
     }
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -84,13 +83,8 @@ public class FilmService {
         return film;
     }
 
-    private void ensureFilmExists(long filmId) {
-        filmStorage.getFilmById(filmId).orElseThrow(() ->
-                new FilmNotFoundException(filmId));
-    }
-
     public void deleteFilm(long filmId) {
-        ensureFilmExists(filmId);
+        getFilmById(filmId);
         filmStorage.deleteFilm(filmId);
     }
 }
