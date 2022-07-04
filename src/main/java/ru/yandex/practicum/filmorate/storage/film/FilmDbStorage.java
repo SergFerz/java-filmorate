@@ -179,7 +179,7 @@ public class FilmDbStorage implements FilmStorage{
         return jdbcTemplate.queryForStream(getSQLRequestByParameters(genreId, year, limit),
                 (rs, num) -> new Film(rs.getLong("f_id"), rs.getString("name"), rs.getDate("rel_date").toLocalDate(),
                              rs.getString("description"), rs.getInt("duration"), rs.getInt("rate"),
-                             new Mpa(rs.getInt("m_id"), rs.getString("m_name")), null, null))
+                             new Mpa(rs.getInt("m_id"), rs.getString("m_name")), null, null, null))
                 .collect(Collectors.toList());
     }
 
