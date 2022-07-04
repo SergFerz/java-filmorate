@@ -14,7 +14,9 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +38,8 @@ public class FilmService {
     private final FilmGenreDao filmGenreStorage;
     private final DirectorService directorService;
 
+
+    private final UserStorage userStorage;
 
     public List<Film> getAllFilms() {
         List<Film> films = filmStorage.getAllFilms();
@@ -121,4 +126,10 @@ public class FilmService {
         }
         return film;
     }
-}
+
+    public Collection<Film> getCommonFilms(long userId, long friendId) {
+        userService.getUserById(userId);
+        userService.getUserById(friendId);
+        return new ArrayList<>(filmStorage.getCommonFilms(userId, friendId));
+        }
+    }

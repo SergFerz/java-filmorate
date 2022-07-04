@@ -94,4 +94,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
         return null;
     }
+
+    @Override
+    public Collection<Film> getCommonFilms(long userId, long friendId) {
+        return null;
+    }
 }

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -17,6 +18,8 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,9 +27,11 @@ import java.util.stream.Collectors;
 @Component
 @Primary
 @Slf4j
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
     private static final String INCREMENT_FILM_RATE = "UPDATE films SET rate=rate+1 WHERE film_id=?";
     private static final String DECREMENT_FILM_RATE = "UPDATE films SET rate=rate-1 WHERE film_id=?";
+
+
     private final JdbcTemplate jdbcTemplate;
     private final GenreDao genreDao;
     private final DirectorDao directorDao;
@@ -300,5 +305,18 @@ public class FilmDbStorage implements FilmStorage{
             filmList.add(getFilmById(filmRows.getLong("film_id")).get());
         }
         return filmList;
+    }
+
+    @Override
+    public Collection<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> commonFilms = new ArrayList<>();
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes WHERE user_id = ? INTERSECT " +
+                "SELECT film_id FROM likes WHERE user_id = ?", userId, friendId);
+        while (rowSet.next()) {
+
+                commonFilms.add(getFilmById(rowSet.getInt("film_id")).get());
+
+        }
+        return commonFilms;
     }
 }

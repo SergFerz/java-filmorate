@@ -5,8 +5,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +65,10 @@ public class FilmController {
     public List<Film> getSortedFilmsOfDirector(@PathVariable long directorId,
                                                @RequestParam String sortBy) {
         return filmService.getSortedFilmsOfDirector(directorId, sortBy);
+    }
+
+    @GetMapping("/films/common") // ?id={userId}&friendId={friendId}
+    public Collection<Film> getCommonFilms(@RequestParam long userId, @RequestParam long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
     }
 }
