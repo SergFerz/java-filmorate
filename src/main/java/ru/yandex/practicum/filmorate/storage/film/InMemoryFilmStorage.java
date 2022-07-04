@@ -64,24 +64,4 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getFilteredListOfFilms(Optional<Integer> genreId, Optional<Integer> year, Optional<Integer> limit) {
         throw new NotImplementedMethod("Метод InMemoryFilmStorage.getFilteredListOfFilms() - не реализован.");
     }
-
-    /**
-     * Метод увеличивает на 1 поле rate таблицы films для фильма с идентификатором filmId.
-     *
-     * @param filmId идентификатор фильма.
-     */
-    @Override
-    public void incrementFilmRate(long filmId) {
-        throw new NotImplementedMethod("Метод InMemoryFilmStorage.incrementFilmRate() - не реализован.");
-    }
-
-    /**
-     * Метод уменьшает на 1 поле rate таблицы films для фильма с идентификатором filmId.
-     *
-     * @param filmId идентификатор фильма.
-     */
-    @Override
-    public void decrementFilmRate(long filmId) {
-        throw new NotImplementedMethod("Метод InMemoryFilmStorage.decrementFilmRate() - не реализован.");
-    }
 }

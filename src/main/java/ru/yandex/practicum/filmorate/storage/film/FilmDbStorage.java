@@ -21,9 +21,6 @@ import java.util.stream.Collectors;
 @Primary
 @Slf4j
 public class FilmDbStorage implements FilmStorage{
-    private static final String INCREMENT_FILM_RATE = "UPDATE films SET rate=rate+1 WHERE film_id=?";
-    private static final String DECREMENT_FILM_RATE = "UPDATE films SET rate=rate-1 WHERE film_id=?";
-
     private final JdbcTemplate jdbcTemplate;
     private final GenreDao genreDao;
 
@@ -168,7 +165,7 @@ public class FilmDbStorage implements FilmStorage{
                                        "       f.releaseDate AS rel_date, " +
                                        "       f.description AS description, " +
                                        "       f.duration AS duration, " +
-                                       "       f.rate AS rate, " +
+                                       "       l.rate AS rate, " +
                                        "       m.id AS m_id, " +
                                        "       m.name AS m_name " +
                                        "FROM (SELECT * " +
@@ -179,6 +176,9 @@ public class FilmDbStorage implements FilmStorage{
                                        "            WHERE EXTRACT(YEAR FROM releaseDate)=%s) AS f " +
                                        "ON fg.film_id=f.film_id " +
                                        "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                                       "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
+                                       "           FROM likes " +
+                                       "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
                                        "ORDER BY rate DESC ", genreId.get(), year.get());
         } else if (genreId.isPresent()) {
             sqlRequest = String.format("SELECT f.film_id AS f_id, " +
@@ -186,7 +186,7 @@ public class FilmDbStorage implements FilmStorage{
                                        "       f.releaseDate AS rel_date, " +
                                        "       f.description AS description, " +
                                        "       f.duration AS duration, " +
-                                       "       f.rate AS rate, " +
+                                       "       l.rate AS rate, " +
                                        "       m.id AS m_id, " +
                                        "       m.name AS m_name " +
                                        "FROM (SELECT film_id " +
@@ -194,6 +194,9 @@ public class FilmDbStorage implements FilmStorage{
                                        "      WHERE id=%s) AS fg " +
                                        "LEFT JOIN films AS f ON fg.film_id=f.film_id " +
                                        "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                                       "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
+                                       "           FROM likes " +
+                                       "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
                                        "ORDER BY rate DESC", genreId.get());
         } else if (year.isPresent()) {
             sqlRequest = String.format("SELECT f.film_id AS f_id, " +
@@ -201,13 +204,16 @@ public class FilmDbStorage implements FilmStorage{
                                        "       f.releaseDate AS rel_date, " +
                                        "       f.description AS description, " +
                                        "       f.duration AS duration, " +
-                                       "       f.rate AS rate, " +
+                                       "       l.rate AS rate, " +
                                        "       m.id AS m_id, " +
                                        "       m.name AS m_name " +
                                        "FROM (SELECT * " +
                                        "      FROM films " +
                                        "      WHERE EXTRACT(YEAR FROM releaseDate)=%s) AS f " +
                                        "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                                       "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
+                                       "           FROM likes " +
+                                       "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
                                        "ORDER BY rate DESC", year.get());
         } else {
             sqlRequest = "SELECT f.film_id AS f_id, " +
@@ -215,33 +221,16 @@ public class FilmDbStorage implements FilmStorage{
                          "       f.releaseDate AS rel_date, " +
                          "       f.description AS description, " +
                          "       f.duration AS duration, " +
-                         "       f.rate AS rate, " +
+                         "       l.rate AS rate, " +
                          "       m.id AS m_id, " +
                          "       m.name AS m_name " +
                          "FROM films AS f " +
                          "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                         "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
+                         "           FROM likes " +
+                         "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
                          "ORDER BY rate DESC";
         }
         return limit.map(integer -> sqlRequest + String.format(" LIMIT %s", integer)).orElse(sqlRequest);
-    }
-
-    /**
-     * Метод увеличивает на 1 поле rate таблицы films для фильма с идентификатором filmId.
-     *
-     * @param filmId    идентификатор фильма.
-     */
-    @Override
-    public void incrementFilmRate(long filmId) {
-        jdbcTemplate.update(INCREMENT_FILM_RATE, filmId);
-    }
-
-    /**
-     * Метод уменьшает на 1 поле rate таблицы films для фильма с идентификатором filmId.
-     *
-     * @param filmId идентификатор фильма.
-     */
-    @Override
-    public void decrementFilmRate(long filmId) {
-        jdbcTemplate.update(DECREMENT_FILM_RATE, filmId);
     }
 }

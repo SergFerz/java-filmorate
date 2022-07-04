@@ -47,7 +47,6 @@ public class FilmService {
         getFilmById(idFilm);
         userService.getUserById(idUser);
         likeDao.addLike(idFilm, idUser);
-        filmStorage.incrementFilmRate(idFilm);
         Film film = getFilmById(idFilm);
         return film;
     }
@@ -55,9 +54,7 @@ public class FilmService {
     public Film deleteLike(long idFilm, long idUser) {
         userService.getUserById(idUser);
         getFilmById(idFilm);
-        if (likeDao.deleteLike(idFilm, idUser) != 0) {
-            filmStorage.decrementFilmRate(idFilm);
-        }
+        likeDao.deleteLike(idFilm, idUser);
         return getFilmById(idFilm);
     }
 

@@ -25,18 +25,4 @@ public interface FilmStorage {
      *          нет ни одного фильма
      */
     List<Film> getFilteredListOfFilms(Optional<Integer> genreId, Optional<Integer> year, Optional<Integer> limit);
-
-    /**
-     * Метод увеличивает на 1 поле rate таблицы films для фильма с идентификатором filmId.
-     *
-     * @param filmId    идентификатор фильма.
-     */
-    void incrementFilmRate(long filmId);
-
-    /**
-     * Метод уменьшает на 1 поле rate таблицы films для фильма с идентификатором filmId.
-     *
-     * @param filmId    идентификатор фильма.
-     */
-    void decrementFilmRate(long filmId);
 }
