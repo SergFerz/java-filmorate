@@ -1,61 +1,67 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
+@Validated
 @RestController
+@RequiredArgsConstructor
+@ControllerAdvice
 public class FilmController {
 
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final FilmService filmService;
 
     @GetMapping("/films")
-    public Collection<Film> findAll() {
-        log.debug("Текущее количество фильмов: {}", films.size());
-        return films.values();
+    public List<Film> getAllFilms() {
+        return filmService.getAllFilms();
     }
 
-    @PostMapping(value = "/films")
-    public Film create(@RequestBody Film film) {
-        if (film == null) {
-            log.debug("Введено некорректное значение: null");
-            throw new ValidationException("Введено некорректное значение: null");
-        }else if (film.getName().isBlank()) {
-            log.debug("Введено некорректное название фильма");
-            throw new ValidationException("Введено некорректное название фильма");
-        } else if (film.getDescription().isBlank() || film.getDescription().length() > 200) {
-            log.debug("Описание не должно превышать 200 символов");
-            throw new ValidationException("Описание не должно превышать 200 символов");
-        } else if (film.getDuration() < 0) {
-            log.debug("Продолжительность фильма должна быть положительной.");
-            throw new ValidationException("Продолжительность фильма должна быть положительной.");
-        } else if (film.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
-            log.debug("Введен некорректный день рождения");
-            throw new ValidationException("Введен некорректный день рождения");
-        } else if (film.getId() < 0) {
-            log.debug("Некорректный идентификатор id");
-            throw new ValidationException("Некорректный идентификатор id");
-        } else {
-            log.debug("Добавлен новый фильм");
-            films.put(film.getId(), film);
-        }
-        return film;
+    @PostMapping("/films")
+    public Film create(@Valid @RequestBody Film film) {
+        return filmService.create(film);
     }
 
     @PutMapping("/films")
-    public Film put(@RequestBody Film film) {
-        films.put(film.getId(), film);
-        log.debug("Фильм " + film.getName() + " обновлен.");
-        return film;
+    public Film update(@Valid @RequestBody Film film) {
+        return filmService.update(film);
     }
+
+    @GetMapping("/films/{id}")
+    public Film findFilmById(@Valid @PathVariable long id) {
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/films/{id}/like/{userId}")
+    public Film addLike(@PathVariable long id, @PathVariable long userId) {
+        return filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public Film deleteLike(@PathVariable long id, @PathVariable long userId) {
+        return filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/films/popular")
+    public List<Film> getTopFilm(@RequestParam(defaultValue = "10", required = false) Integer count) {
+        return filmService.getTopFilm(count);
+    }
+    @GetMapping("/films/search")
+    public List<Film> getAllFilmsByRate(){
+        return filmService.getAllByRate();
+    }
+
+    @GetMapping("/films/search?query={text}")
+    public Set<Film> search(@PathVariable String text){
+        return filmService.search(text);
+    }
+
 }
