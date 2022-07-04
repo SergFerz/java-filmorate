@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.*;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
@@ -22,8 +21,6 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
-    //private final Recommender recommender;
-    //private final MyRecommender recommender;
     private final Recommender recommender;
     private final FilmStorage filmStorage;
 
@@ -110,3 +107,4 @@ public class UserService {
         return films;
     }
 }
+//for review
