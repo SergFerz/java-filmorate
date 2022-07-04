@@ -133,8 +133,8 @@ public class FilmService {
         userService.getUserById(userId);
         userService.getUserById(friendId);
         return new ArrayList<>(filmStorage.getCommonFilms(userId, friendId));
-        }
     }
+
 
     public void deleteFilm(long filmId) {
         getFilmById(filmId);
