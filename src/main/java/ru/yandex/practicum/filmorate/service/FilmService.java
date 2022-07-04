@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -10,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,9 +25,12 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final LikeDao likeDao;
     private final UserService userService;
+    private final DirectorService directorService;
 
     public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        List<Film> films = filmStorage.getAllFilms();
+        films.sort(Comparator.comparing(Film::getId));
+        return films;
     }
 
     public Film create(Film film) {
@@ -68,6 +74,15 @@ public class FilmService {
         Film film = filmStorage.getFilmById(id)
                 .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
         return film;
+    }
+
+    public List<Film> getSortedFilmsOfDirector(long directorId, String sortBy) {
+        directorService.getDirectorById(directorId);
+        if (sortBy.equals("year")) {
+            return filmStorage.getSortedByYearFilmsOfDirector(directorId);
+        } else if (sortBy.equals("likes")) {
+            return filmStorage.getSortedByLikesFilmsOfDirector(directorId);
+        } else return null;
     }
 
     private Film validateFilm(Film film) {

@@ -14,4 +14,8 @@ public interface FilmStorage {
     Film update(Film film);
 
     Optional<Film> getFilmById(long id);
+
+    List<Film> getSortedByLikesFilmsOfDirector(long directorId);
+
+    List<Film> getSortedByYearFilmsOfDirector(long directorId);
 }
