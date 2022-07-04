@@ -83,5 +83,15 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public void decrementFilmRate(long filmId) {
         throw new NotImplementedMethod("Метод InMemoryFilmStorage.decrementFilmRate() - не реализован.");
+   }
+
+    @Override
+    public List<Film> getSortedByLikesFilmsOfDirector(long directorId) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
+        return null;
     }
 }

@@ -39,4 +39,8 @@ public interface FilmStorage {
      * @param filmId    идентификатор фильма.
      */
     void decrementFilmRate(long filmId);
+
+    List<Film> getSortedByLikesFilmsOfDirector(long directorId);
+
+    List<Film> getSortedByYearFilmsOfDirector(long directorId);
 }
