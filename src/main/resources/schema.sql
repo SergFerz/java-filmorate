@@ -33,8 +33,8 @@ CREATE TABLE friends
     friend_id int NOT NULL,
     status varchar(100),
     PRIMARY KEY (user_id, friend_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (friend_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (friend_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE films
@@ -46,7 +46,7 @@ CREATE TABLE films
     duration int,
     rate int,
     mpa_id int DEFAULT 5,
-    FOREIGN KEY (mpa_id) REFERENCES mpa(id)
+    FOREIGN KEY (mpa_id) REFERENCES mpa(id) ON DELETE CASCADE
 );
 
 CREATE TABLE likes
@@ -54,8 +54,8 @@ CREATE TABLE likes
     film_id int NOT NULL,
     user_id int NOT NULL,
     PRIMARY KEY (film_id, user_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (film_id) REFERENCES films(film_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (film_id) REFERENCES films(film_id) ON DELETE CASCADE
 );
 
 CREATE TABLE film_genre
@@ -63,8 +63,8 @@ CREATE TABLE film_genre
     film_id int NOT NULL,
     id int NOT NULL,
     CONSTRAINT  pk PRIMARY KEY (film_id, id),
-    FOREIGN KEY (film_id) REFERENCES films(film_id),
-    FOREIGN KEY (id) REFERENCES genres(id)
+    FOREIGN KEY (film_id) REFERENCES films(film_id) ON DELETE CASCADE,
+    FOREIGN KEY (id) REFERENCES genres(id) ON DELETE CASCADE
 );
 
 CREATE TABLE film_director

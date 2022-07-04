@@ -12,13 +12,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-
-import ru.yandex.practicum.filmorate.model.Director;
-
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
@@ -318,5 +312,10 @@ public class FilmDbStorage implements FilmStorage {
 
         }
         return commonFilms;
+    }
+
+    @Override
+    public void deleteFilm(long id) {
+        jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", id);
     }
 }

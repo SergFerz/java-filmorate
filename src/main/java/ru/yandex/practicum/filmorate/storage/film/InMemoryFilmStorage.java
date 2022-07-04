@@ -99,4 +99,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Collection<Film> getCommonFilms(long userId, long friendId) {
         return null;
     }
+
+    @Override
+    public void deleteFilm(long id) {
+        films.remove(id);
+    }
 }

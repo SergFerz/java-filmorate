@@ -68,4 +68,9 @@ public class InMemoryUserStorage implements UserStorage {
         update(user);
         update(friend);
     }
+
+    @Override
+    public void deleteUser(long id) {
+        users.remove(id);
+    }
 }

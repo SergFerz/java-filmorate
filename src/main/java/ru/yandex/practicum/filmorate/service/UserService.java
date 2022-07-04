@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -48,7 +47,7 @@ public class UserService {
         if (getAllFriends(idFriend).stream().map(User::getId).anyMatch( x -> x.equals(idUser))) {
             userStorage.addFriend(idUser, idFriend, "CONFIRM");
         } else {
-            userStorage.addFriend(idUser, idFriend, "UNCONFIRM");
+            userStorage.addFriend(idUser, idFriend, "UNCONFIRM ");
         }
     }
 
@@ -87,5 +86,10 @@ public class UserService {
             user.setName(user.getLogin());
         }
         return user;
+    }
+
+    public void deleteUser(long userId) {
+        getUserById(userId);
+        userStorage.deleteUser(userId);
     }
 }
