@@ -46,6 +46,8 @@ public class Film implements Comparable<Film> {
     @Setter
     Set<Director> directors;
 
+    @NonFinal
+    @Setter
     Set<Long> likes;
 
     @Override

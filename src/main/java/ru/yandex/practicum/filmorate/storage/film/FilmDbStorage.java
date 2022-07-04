@@ -11,18 +11,22 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
+
 import ru.yandex.practicum.filmorate.model.Director;
+
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Primary
 @Slf4j
-public class FilmDbStorage implements FilmStorage {
-
+public class FilmDbStorage implements FilmStorage{
+    private static final String INCREMENT_FILM_RATE = "UPDATE films SET rate=rate+1 WHERE film_id=?";
+    private static final String DECREMENT_FILM_RATE = "UPDATE films SET rate=rate-1 WHERE film_id=?";
     private final JdbcTemplate jdbcTemplate;
     private final GenreDao genreDao;
     private final DirectorDao directorDao;
@@ -160,6 +164,119 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    /**
+     * Метод возвращает упорядоченный по убыванию количества лайков список из limit фильмов отфильтрованный по жанру и
+     * году. Если в БД нет ни одного фильма, удовлетворяющего заданным условиям, то метод вернет пустой список.
+     *
+     * @param genreId идентификатор жанра фильма.
+     * @param year    год выпуска фильма;
+     * @param limit   максимальное количество фильмов, которое вернет метод;
+     * @return отфильтрованный список фильмов, упорядоченный по убыванию количества лайков; пустой список, если в БД
+     *         нет ни одного фильма
+     */
+    @Override
+    public List<Film> getFilteredListOfFilms(Optional<Integer> genreId, Optional<Integer> year, Optional<Integer> limit) {
+        return jdbcTemplate.queryForStream(getSQLRequestByParameters(genreId, year, limit),
+                (rs, num) -> new Film(rs.getLong("f_id"), rs.getString("name"), rs.getDate("rel_date").toLocalDate(),
+                             rs.getString("description"), rs.getInt("duration"), rs.getInt("rate"),
+                             new Mpa(rs.getInt("m_id"), rs.getString("m_name")), null, null, null))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Метод возвращает строку SQL запроса с учетом значения параметров genreId, year, limit.
+     *
+     * @param genreId   идентификатор жанра;
+     * @param year  год выпуска фильма;
+     * @param limit максимальное количество фильмов, которое нужно получить;
+     * @return  строка с SQL запросом.
+     */
+    private String getSQLRequestByParameters(Optional<Integer> genreId, Optional<Integer> year, Optional<Integer> limit) {
+        String sqlRequest;
+
+        if (genreId.isPresent() && year.isPresent()) {
+            sqlRequest = String.format("SELECT f.film_id AS f_id, " +
+                                       "       f.name AS name, " +
+                                       "       f.releaseDate AS rel_date, " +
+                                       "       f.description AS description, " +
+                                       "       f.duration AS duration, " +
+                                       "       f.rate AS rate, " +
+                                       "       m.id AS m_id, " +
+                                       "       m.name AS m_name " +
+                                       "FROM (SELECT * " +
+                                       "      FROM film_genre " +
+                                       "      WHERE id=%s) AS fg " +
+                                       "INNER JOIN (SELECT * " +
+                                       "            FROM films " +
+                                       "            WHERE EXTRACT(YEAR FROM releaseDate)=%s) AS f " +
+                                       "ON fg.film_id=f.film_id " +
+                                       "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                                       "ORDER BY rate DESC ", genreId.get(), year.get());
+        } else if (genreId.isPresent()) {
+            sqlRequest = String.format("SELECT f.film_id AS f_id, " +
+                                       "       f.name AS name, " +
+                                       "       f.releaseDate AS rel_date, " +
+                                       "       f.description AS description, " +
+                                       "       f.duration AS duration, " +
+                                       "       f.rate AS rate, " +
+                                       "       m.id AS m_id, " +
+                                       "       m.name AS m_name " +
+                                       "FROM (SELECT film_id " +
+                                       "      FROM film_genre " +
+                                       "      WHERE id=%s) AS fg " +
+                                       "LEFT JOIN films AS f ON fg.film_id=f.film_id " +
+                                       "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                                       "ORDER BY rate DESC", genreId.get());
+        } else if (year.isPresent()) {
+            sqlRequest = String.format("SELECT f.film_id AS f_id, " +
+                                       "       f.name AS name, " +
+                                       "       f.releaseDate AS rel_date, " +
+                                       "       f.description AS description, " +
+                                       "       f.duration AS duration, " +
+                                       "       f.rate AS rate, " +
+                                       "       m.id AS m_id, " +
+                                       "       m.name AS m_name " +
+                                       "FROM (SELECT * " +
+                                       "      FROM films " +
+                                       "      WHERE EXTRACT(YEAR FROM releaseDate)=%s) AS f " +
+                                       "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                                       "ORDER BY rate DESC", year.get());
+        } else {
+            sqlRequest = "SELECT f.film_id AS f_id, " +
+                         "       f.name AS name, " +
+                         "       f.releaseDate AS rel_date, " +
+                         "       f.description AS description, " +
+                         "       f.duration AS duration, " +
+                         "       f.rate AS rate, " +
+                         "       m.id AS m_id, " +
+                         "       m.name AS m_name " +
+                         "FROM films AS f " +
+                         "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
+                         "ORDER BY rate DESC";
+        }
+        return limit.map(integer -> sqlRequest + String.format(" LIMIT %s", integer)).orElse(sqlRequest);
+    }
+
+    /**
+     * Метод увеличивает на 1 поле rate таблицы films для фильма с идентификатором filmId.
+     *
+     * @param filmId    идентификатор фильма.
+     */
+    @Override
+    public void incrementFilmRate(long filmId) {
+        jdbcTemplate.update(INCREMENT_FILM_RATE, filmId);
+    }
+
+    /**
+     * Метод уменьшает на 1 поле rate таблицы films для фильма с идентификатором filmId.
+     *
+     * @param filmId идентификатор фильма.
+     */
+    @Override
+    public void decrementFilmRate(long filmId) {
+        jdbcTemplate.update(DECREMENT_FILM_RATE, filmId);
+}
+
     public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
         List<Film> filmList = new ArrayList<>();
 
@@ -175,7 +292,6 @@ public class FilmDbStorage implements FilmStorage {
 
     public List<Film> getSortedByLikesFilmsOfDirector(long directorId) {
         List<Film> filmList = new ArrayList<>();
-
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM films AS f " +
                 "LEFT JOIN likes AS l on f.film_id=l.film_id " +
                 "LEFT JOIN film_director AS fd ON f.film_id=fd.film_id WHERE fd.id=? " +
