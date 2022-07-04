@@ -89,12 +89,8 @@ public class FilmService {
     }
 
     public Collection<Film> getCommonFilms(long userId, long friendId) {
-        if(userService.getUserById(userId) == null) {
-            throw new NotFoundException("Пользователь не найден");
-        }
-        if(userService.getUserById(friendId) == null) {
-            throw new NotFoundException("Пользователь не найден");
-        }
+        userService.getUserById(userId);
+        userService.getUserById(friendId);
         return new ArrayList<>(filmStorage.getCommonFilms(userId, friendId));
         }
     }
