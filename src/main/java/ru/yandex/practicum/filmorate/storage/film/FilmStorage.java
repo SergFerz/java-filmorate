@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FilmStorage {
+
     List<Film> getAllFilms();
 
     Film create(Film film);
@@ -14,4 +15,6 @@ public interface FilmStorage {
     Film update(Film film);
 
     Optional<Film> getFilmById(long id);
+
+    Collection<Film> getCommonFilms(long userId, long friendId);
 }

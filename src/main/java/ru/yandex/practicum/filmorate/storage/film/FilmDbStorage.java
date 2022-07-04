@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -11,17 +10,18 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
 
 @Component
 @Primary
 @Slf4j
-public class FilmDbStorage implements FilmStorage{
+public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final GenreDao genreDao;
@@ -82,10 +82,12 @@ public class FilmDbStorage implements FilmStorage{
             jdbcTemplate.update("DELETE FROM film_genre WHERE film_id=?", film.getId());
             film.getGenres().stream()
                     .forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
-                    film.getId(), genre.getId()));
+                            film.getId(), genre.getId()));
         }
         Film film1 = getFilmById(film.getId()).get();
-        if (film1.getGenres() == null) {film1.setGenres(Collections.emptySet());}
+        if (film1.getGenres() == null) {
+            film1.setGenres(Collections.emptySet());
+        }
         return film1;
     }
 
@@ -97,7 +99,9 @@ public class FilmDbStorage implements FilmStorage{
         while (genreRows.next()) {
             genres.add(genreDao.getGenreById(genreRows.getInt("id")).get());
         }
-        if (genres.isEmpty()) {genres = null;}
+        if (genres.isEmpty()) {
+            genres = null;
+        }
 
         if (filmRows.next()) {
             SqlRowSet mpaRow = jdbcTemplate.queryForRowSet("SELECT * FROM mpa WHERE id = ?",
@@ -129,5 +133,19 @@ public class FilmDbStorage implements FilmStorage{
             log.info("Фильм с идентификатором {} не найден.", id);
             return Optional.empty();
         }
+    }
+
+
+    @Override
+    public Collection<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> commonFilms = new ArrayList<>();
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes WHERE user_id = ? INTERSECT " +
+                "SELECT film_id FROM likes WHERE user_id = ?", userId, friendId);
+        while (rowSet.next()) {
+
+                commonFilms.add(getFilmById(rowSet.getInt("film_id")).get());
+
+        }
+        return commonFilms;
     }
 }
