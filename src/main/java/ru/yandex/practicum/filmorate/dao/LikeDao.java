@@ -23,4 +23,7 @@ public interface LikeDao {
      *         пользователей, поставивших лайки этому фильму
      */
     Map<Long, Set<Long>> getLikesForFilteredFilms(Optional<Integer> genreId, Optional<Integer> year);
+    void deleteLike(long idFilm, long idUser);
+
+    void deleteAllLikesFilm(long idFilm);
 }

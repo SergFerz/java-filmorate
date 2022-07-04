@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -63,5 +64,10 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable("userId") long userId) {
         userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/users/{id}/recommendations")
+    public List<Film> getRecommendations(@Valid @PathVariable long id) {
+        return userService.getRecommendations(id);
     }
 }

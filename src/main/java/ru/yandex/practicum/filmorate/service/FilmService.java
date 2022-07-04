@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -18,6 +19,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -112,6 +114,12 @@ public class FilmService {
         } else if (sortBy.equals("likes")) {
             return filmStorage.getSortedByLikesFilmsOfDirector(directorId);
         } else return null;
+    }
+
+    public void deleteFilmById(long filmId) {
+        getFilmById(filmId);
+        likeDao.deleteAllLikesFilm(filmId);
+        filmStorage.deleteFilmById(filmId);
     }
 
     private Film validateFilm(Film film) {
