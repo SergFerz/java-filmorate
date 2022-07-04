@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Validated
 @RestController
@@ -53,4 +54,14 @@ public class FilmController {
     public List<Film> getTopFilm(@RequestParam(defaultValue = "10", required = false) Integer count) {
         return filmService.getTopFilm(count);
     }
+    @GetMapping("/films/search")
+    public List<Film> getAllFilmsByRate(){
+        return filmService.getAllByRate();
+    }
+
+    @GetMapping("/films/search?query={text}")
+    public Set<Film> search(@PathVariable String text){
+        return filmService.search(text);
+    }
+
 }
