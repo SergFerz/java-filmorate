@@ -48,4 +48,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Optional<Film> getFilmById(long id) {
         return Optional.ofNullable(films.get(id));
     }
+
+    @Override
+    public List<Film> getSortedByLikesFilmsOfDirector(long directorId) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
+        return null;
+    }
 }
