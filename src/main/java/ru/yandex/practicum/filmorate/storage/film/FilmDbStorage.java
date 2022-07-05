@@ -13,13 +13,11 @@ import ru.yandex.practicum.filmorate.dao.DirectorDao;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.model.*;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-
 
 @Component
 @Primary
@@ -298,9 +296,7 @@ public class FilmDbStorage implements FilmStorage{
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes WHERE user_id = ? INTERSECT " +
                 "SELECT film_id FROM likes WHERE user_id = ?", userId, friendId);
         while (rowSet.next()) {
-
                 commonFilms.add(getFilmById(rowSet.getInt("film_id")).get());
-
         }
         return commonFilms;
     }
@@ -308,5 +304,22 @@ public class FilmDbStorage implements FilmStorage{
     @Override
     public void deleteFilm(long id) {
         jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", id);
+    }
+
+    @Override
+    public List<Film> search(String query, List<String> by) {
+        List<Film> filmList = new ArrayList<>();
+        String stringSearch = "%" + query.toLowerCase() + "%";
+        if (by.contains("title")) {
+            filmList.addAll(jdbcTemplate.query("SELECT film_id FROM films WHERE LOWER(name) LIKE ?",
+                    ((rs, rowNum) -> getFilmById(rs.getLong("film_id")).get()), stringSearch));
+        }
+        if (by.contains("director")) {
+            filmList.addAll(jdbcTemplate.query("SELECT f.film_id FROM films AS f " +
+                            "JOIN film_director AS fd ON f.film_id=fd.film_id " +
+                            "JOIN directors AS d ON fd.id=d.id WHERE LOWER(d.name) LIKE ?",
+                    ((rs, rowNum) -> getFilmById(rs.getLong("film_id")).get()), stringSearch));
+        }
+        return  filmList;
     }
 }

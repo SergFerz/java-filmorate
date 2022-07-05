@@ -36,4 +36,6 @@ public interface FilmStorage {
     Collection<Film> getCommonFilms(long userId, long friendId);
 
     void deleteFilm(long id);
+
+    List<Film> search(String query, List<String> by);
 }

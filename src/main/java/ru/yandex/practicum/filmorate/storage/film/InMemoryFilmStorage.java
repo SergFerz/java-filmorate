@@ -84,4 +84,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteFilm(long id) {
         films.remove(id);
     }
+
+    @Override
+    public List<Film> search(String query, List<String> by) {
+        throw new NotImplementedMethod("Метод InMemoryFilmStorage.decrementFilmRate() - не реализован.");
+    }
 }
