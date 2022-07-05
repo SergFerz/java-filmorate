@@ -71,7 +71,6 @@ CREATE TABLE film_director
 (
     film_id int NOT NULL,
     id int NOT NULL,
-    --CONSTRAINT  pk PRIMARY KEY (film_id, id),
     FOREIGN KEY (film_id) REFERENCES films(film_id),
     FOREIGN KEY (id) REFERENCES directors(id) ON DELETE CASCADE
 );

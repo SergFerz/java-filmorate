@@ -99,9 +99,4 @@ public class LikeDaoImpl implements LikeDao {
         }
         return sqlRequest;
     }
-
-    @Override
-    public void deleteAllLikesFilm(long idFilm) {
-        jdbcTemplate.update("DELETE FROM likes WHERE film_id=?", idFilm);
-    }
 }
