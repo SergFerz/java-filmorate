@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -81,7 +80,7 @@ public class FilmService {
             film.setLikes(likes.get(film.getId()));
             film.setGenres(genres.get(film.getId()));
         }).collect(Collectors.toList());
-}
+    }
 
     public List<Film> getSortedFilmsOfDirector(long directorId, String sortBy) {
         directorService.getDirectorById(directorId);
@@ -117,8 +116,5 @@ public class FilmService {
         getFilmById(filmId);
         filmStorage.deleteFilm(filmId);
     }
-
-    public List<Film> search(@RequestParam String query, @RequestParam List<String>  by) {
-        return filmService.search(query, by);
-    }
 }
+
