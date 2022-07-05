@@ -97,7 +97,6 @@ public class LikeDaoImpl implements LikeDao {
                         "       user_id AS u_id " +
                         "FROM likes";
         }
-
         return sqlRequest;
     }
 

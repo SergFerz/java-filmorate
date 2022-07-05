@@ -52,7 +52,6 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
      */
     private String getSQLRequestByParameters(Optional<Integer> genreId, Optional<Integer> year) {
         String sqlRequest;
-
         if (genreId.isPresent() && year.isEmpty()) {
             sqlRequest = String.format("SELECT fg.film_id AS f_id, " +
                                        "       g.id AS g_id, " +
@@ -93,7 +92,6 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
                          "FROM film_genre AS fg " +
                          "LEFT JOIN genres AS g ON fg.id=g.id";
         }
-
         return sqlRequest;
     }
 }

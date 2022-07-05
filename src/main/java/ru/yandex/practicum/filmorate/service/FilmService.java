@@ -4,24 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
-
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import org.springframework.web.bind.annotation.PathVariable;
-import ru.yandex.practicum.filmorate.dao.LikeDao;
-import org.springframework.web.bind.annotation.PathVariable;
+import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -30,8 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -43,9 +32,6 @@ public class FilmService {
     private final UserService userService;
     private final FilmGenreDao filmGenreStorage;
     private final DirectorService directorService;
-
-
-    private final UserStorage userStorage;
 
     public List<Film> getAllFilms() {
         List<Film> films = filmStorage.getAllFilms();
@@ -82,23 +68,11 @@ public class FilmService {
         return getFilmById(idFilm);
     }
 
-    public List<Film> getTopFilm(Integer count) {
-        if (count < 1) {
-            throw new ValidationException("Введено некорректное значение count");
-        }
-        List<Film> films = getAllFilms();
-        films.sort(Film::compareTo);
-        return films.stream()
-                .limit(count)
-                .collect(Collectors.toList());
-    }
-
     public Film getFilmById(long id) {
         Film film = filmStorage.getFilmById(id)
                 .orElseThrow(() -> new NotFoundException("Введено некорректное значение id"));
         return film;
     }
-
 
     public List<Film> getFilteredListOfFilms(Optional<Integer> genreId, Optional<Integer> year, Optional<Integer> limit) {
         Map<Long, Set<Long>> likes = likeDao.getLikesForFilteredFilms(genreId, year);
@@ -116,12 +90,6 @@ public class FilmService {
         } else if (sortBy.equals("likes")) {
             return filmStorage.getSortedByLikesFilmsOfDirector(directorId);
         } else return null;
-    }
-
-    public void deleteFilmById(long filmId) {
-        getFilmById(filmId);
-        likeDao.deleteAllLikesFilm(filmId);
-        filmStorage.deleteFilmById(filmId);
     }
 
     private Film validateFilm(Film film) {
@@ -145,9 +113,12 @@ public class FilmService {
         return new ArrayList<>(filmStorage.getCommonFilms(userId, friendId));
     }
 
-
     public void deleteFilm(long filmId) {
         getFilmById(filmId);
         filmStorage.deleteFilm(filmId);
+    }
+
+    public List<Film> search(@RequestParam String query, @RequestParam List<String>  by) {
+        return filmService.search(query, by);
     }
 }

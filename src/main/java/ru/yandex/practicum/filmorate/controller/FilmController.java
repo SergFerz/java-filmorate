@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -44,9 +43,6 @@ public class FilmController {
         return filmService.getFilmById(id);
     }
 
-    @DeleteMapping("/films/{filmId}")
-    public void deleteFilmById(@Valid @PathVariable long filmId) {filmService.deleteFilmById(filmId);}
-
     @PutMapping("/films/{id}/like/{userId}")
     public Film addLike(@PathVariable long id, @PathVariable long userId) {
         return filmService.addLike(id, userId);
@@ -64,10 +60,6 @@ public class FilmController {
         return filmService.getFilteredListOfFilms(genreId, year, limit);
     }
 
-    public List<Film> getTopFilm(@RequestParam(defaultValue = "10", required = false, name = "count") Integer count) {
-        return filmService.getTopFilm(count);
-    }
-
     @DeleteMapping("/films/{filmId}")
     public ResponseEntity<?> deleteFilm(@PathVariable("filmId") long filmId) {
         filmService.deleteFilm(filmId);
@@ -83,5 +75,10 @@ public class FilmController {
     @GetMapping("/films/common") // ?id={userId}&friendId={friendId}
     public Collection<Film> getCommonFilms(@RequestParam long userId, @RequestParam long friendId) {
         return filmService.getCommonFilms(userId, friendId);
+    }
+
+    @GetMapping("/films/search")
+    public List<Film> search(@RequestParam String query, @RequestParam List<String>  by) {
+        return filmService.search(query, by);
     }
 }

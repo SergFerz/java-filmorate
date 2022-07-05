@@ -33,7 +33,6 @@ public class ReviewDaoImpl implements ReviewDao {
                 .addValue("content", review.getContent())
                 .addValue("is_positive", review.getIsPositive())
                 .addValue("useful", review.getUseful());
-
         Number num = jdbcInsert.executeAndReturnKey(parameters);
         if (getReviewById(num.longValue()).isPresent()) {
             return getReviewById(num.longValue()).get();
@@ -78,7 +77,6 @@ public class ReviewDaoImpl implements ReviewDao {
         }
     }
 
-    //TODO Некорректно написан метод: надо делать запрос в БД один раз и с маппером создавать Review
     public List<Review> getAllReviews() {
         List<Review> reviewList = new ArrayList<>();
         SqlRowSet reviewsIdRows = jdbcTemplate.queryForRowSet("SELECT review_id FROM reviews");

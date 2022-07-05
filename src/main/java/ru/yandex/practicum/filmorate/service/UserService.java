@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Recommender;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
@@ -25,7 +28,7 @@ public class UserService {
     private final FilmStorage filmStorage;
 
     public List<User> getAllUsers() {
-        return (List<User>) userStorage.getAllUsers();
+        return userStorage.getAllUsers();
     }
 
     public User create(User user) {
@@ -107,4 +110,3 @@ public class UserService {
         return films;
     }
 }
-//for review

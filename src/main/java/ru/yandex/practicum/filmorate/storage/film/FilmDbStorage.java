@@ -42,15 +42,6 @@ public class FilmDbStorage implements FilmStorage {
         this.jdbcTemplate = jdbcTemplate;
         this.genreDao = genreDao;
         this.directorDao = directorDao;
-public class FilmDbStorage implements FilmStorage{
-
-    private final JdbcTemplate jdbcTemplate;
-    private final GenreDao genreDao;
-
-    @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDao genreDao) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.genreDao = genreDao;
     }
 
     @Override
@@ -333,11 +324,5 @@ public class FilmDbStorage implements FilmStorage{
     @Override
     public void deleteFilm(long id) {
         jdbcTemplate.update("DELETE FROM films WHERE film_id = ?", id);
-    }
-
-    @Override
-    public void deleteFilmById(long filmId) {
-        jdbcTemplate.update("DELETE FROM film_genre WHERE film_id=?", filmId);
-        jdbcTemplate.update("DELETE FROM films WHERE film_id=?", filmId);
     }
 }

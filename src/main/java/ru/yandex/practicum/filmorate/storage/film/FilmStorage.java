@@ -48,6 +48,4 @@ public interface FilmStorage {
     Collection<Film> getCommonFilms(long userId, long friendId);
 
     void deleteFilm(long id);
-
-    void deleteFilmById(long filmId);
 }
