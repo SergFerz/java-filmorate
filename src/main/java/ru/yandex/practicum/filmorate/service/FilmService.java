@@ -116,5 +116,11 @@ public class FilmService {
         getFilmById(filmId);
         filmStorage.deleteFilm(filmId);
     }
+
+    public List<Film> search(String query, List<String> by) {
+        List<Film> filmList = filmStorage.search(query, by);
+        filmList.sort(Film::compareTo);
+        return  filmList;
+    }
 }
 
