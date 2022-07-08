@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +35,12 @@ public class DirectorService {
     }
 
     public Director getDirectorById( long id) {
-        return directorDao.getDirectorById(id)
-                .orElseThrow(() -> new NotFoundException("Введено некорректное значение director_id"));
+        Optional<Director> director = directorDao.getDirectorById(id);
+        if (director.isEmpty()) {
+            log.warn("director с идентификатором {} не найден.", id);
+            throw  new NotFoundException("Введено некорректное значение director_id");
+        }
+        return director.get();
     }
 
     public boolean deleteDirectorById(long id) {

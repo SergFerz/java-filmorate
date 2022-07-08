@@ -29,6 +29,8 @@ public class Film implements Comparable<Film> {
     @Setter
     int rate;
 
+    @NonFinal
+    @Setter
     Mpa mpa;
 
     @NonFinal

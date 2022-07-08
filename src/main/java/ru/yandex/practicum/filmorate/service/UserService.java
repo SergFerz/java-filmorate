@@ -3,19 +3,15 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Recommender;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +20,8 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
-    private final Recommender recommender;
-    private final FilmStorage filmStorage;
+    private final FilmService filmService;
+    private final LikeDao likeDao;
 
     public List<User> getAllUsers() {
         return userStorage.getAllUsers();
@@ -101,12 +97,52 @@ public class UserService {
 
     public List<Film> getRecommendations(long id) {
         List<Film> films = new ArrayList<>();
-        Set<Long> filmsId = recommender.getRecommendations(id);
+        Set<Long> filmsId = createRecommendations(id);
         if (!filmsId.isEmpty()) {
             for (Long i : filmsId) {
-                films.add(filmStorage.getFilmById(i).get());
+                films.add(filmService.getFilmById(i));
             }
         }
         return films;
+    }
+
+    private Set<Long> createRecommendations(long userId) {
+        Map<Long, Map<Long, Double>> diffMatrix = new HashMap<>();
+        Map<Long, Integer> freq = new HashMap<>();
+        Map<Long, Map<Long, Double>> data = likeDao.buildDifferencesMatrix();
+        Set<Long> filmSet = new HashSet<>();
+        Map<Long, Double> userLikes = data.get(userId);
+        for (Map.Entry<Long, Map<Long, Double>> entryData : data.entrySet()) {
+            if (entryData.getKey() == userId) {
+                continue;
+            }
+            diffMatrix.put(entryData.getKey(), new HashMap<>());
+            for (Map.Entry<Long, Double> entry : entryData.getValue().entrySet()) {
+                double diff = userLikes.get(entry.getKey()) * entry.getValue();
+                if (diff == 1.0) {
+                    if (!freq.containsKey(entryData.getKey())) {
+                        freq.put(entryData.getKey(), 0);
+                    }
+                    int countFreq = freq.get(entryData.getKey());
+                    countFreq++;
+                    freq.put(entryData.getKey(), countFreq);
+                }
+                diffMatrix.get(entryData.getKey()).put(entry.getKey(), diff);
+            }
+        }
+        for (Map.Entry<Long, Map<Long, Double>> entryData : data.entrySet()) {
+            if (freq.get(entryData.getKey()) == null
+                    || freq.get(entryData.getKey()) == 0
+                    || entryData.getKey() == userId) {
+                continue;
+            }
+            for (Map.Entry<Long, Double> entry : entryData.getValue().entrySet()) {
+                if (data.get(entryData.getKey()).get(entry.getKey()) == 1 &&
+                        diffMatrix.get(entryData.getKey()).get(entry.getKey()) == 0) {
+                    filmSet.add(entry.getKey());
+                }
+            }
+        }
+        return filmSet;
     }
 }

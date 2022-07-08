@@ -28,6 +28,8 @@ public class ErrorHandler {
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 
+
+
     private class ErrorResponse {
         private String error;
 
