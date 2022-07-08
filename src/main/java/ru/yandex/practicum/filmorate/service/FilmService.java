@@ -116,8 +116,9 @@ public class FilmService {
     }
 
     public List<Film> getFilteredListOfFilms(Optional<Integer> genreId, Optional<Integer> year, Optional<Integer> limit) {
-        Map<Long, Set<Long>> likes = likeDao.getLikesForFilteredFilms(genreId, year);
-        Map<Long, Set<Genre>> genres = filmGenreStorage.getGenresForFilteredFilms(genreId, year);
+        Map<Long, Set<Long>> likes = likeDao.getLikesForAllFilms();
+        Map<Long, Set<Genre>> genres = filmGenreStorage.getGenresForAllFilms();
+
         return filmStorage.getFilteredListOfFilms(genreId, year, limit).stream().peek(film -> {
             film.setLikes(likes.get(film.getId()));
             film.setGenres(genres.get(film.getId()));
