@@ -137,18 +137,14 @@ public class FilmDbStorage implements FilmStorage{
                                        "       l.rate AS rate, " +
                                        "       m.id AS m_id, " +
                                        "       m.name AS m_name " +
-                                       "FROM (SELECT * " +
-                                       "      FROM film_genre " +
-                                       "      WHERE id=%s) AS fg " +
-                                       "INNER JOIN (SELECT * " +
-                                       "            FROM films " +
-                                       "            WHERE EXTRACT(YEAR FROM releaseDate)=%s) AS f " +
-                                       "ON fg.film_id=f.film_id " +
+                                       "FROM film_genre AS fg " +
+                                       "LEFT JOIN films AS f ON fg.film_id=f.film_id " +
                                        "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
                                        "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
                                        "           FROM likes " +
                                        "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
-                                       "ORDER BY rate DESC ", genreId.get(), year.get());
+                                       "WHERE fg.id=%d AND EXTRACT(YEAR FROM f.releaseDate)=%d " +
+                                       "ORDER BY rate DESC", genreId.get(), year.get());
         } else if (genreId.isPresent()) {
             sqlRequest = String.format("SELECT f.film_id AS f_id, " +
                                        "       f.name AS name, " +
@@ -158,14 +154,13 @@ public class FilmDbStorage implements FilmStorage{
                                        "       l.rate AS rate, " +
                                        "       m.id AS m_id, " +
                                        "       m.name AS m_name " +
-                                       "FROM (SELECT film_id " +
-                                       "      FROM film_genre " +
-                                       "      WHERE id=%s) AS fg " +
+                                       "FROM film_genre AS fg " +
                                        "LEFT JOIN films AS f ON fg.film_id=f.film_id " +
                                        "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
                                        "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
                                        "           FROM likes " +
                                        "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
+                                       "WHERE fg.id=%d " +
                                        "ORDER BY rate DESC", genreId.get());
         } else if (year.isPresent()) {
             sqlRequest = String.format("SELECT f.film_id AS f_id, " +
@@ -176,13 +171,12 @@ public class FilmDbStorage implements FilmStorage{
                                        "       l.rate AS rate, " +
                                        "       m.id AS m_id, " +
                                        "       m.name AS m_name " +
-                                       "FROM (SELECT * " +
-                                       "      FROM films " +
-                                       "      WHERE EXTRACT(YEAR FROM releaseDate)=%s) AS f " +
+                                       "FROM films AS f " +
                                        "LEFT JOIN mpa AS m ON f.mpa_id=m.id " +
                                        "LEFT JOIN (SELECT film_id, COUNT(user_id) AS rate " +
                                        "           FROM likes " +
                                        "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
+                                       "WHERE EXTRACT(YEAR FROM f.releaseDate)=%d " +
                                        "ORDER BY rate DESC", year.get());
         } else {
             sqlRequest = "SELECT f.film_id AS f_id, " +
@@ -200,7 +194,9 @@ public class FilmDbStorage implements FilmStorage{
                          "           GROUP BY film_id) AS l ON f.film_id=l.film_id " +
                          "ORDER BY rate DESC";
         }
-        return limit.map(integer -> sqlRequest + String.format(" LIMIT %s", integer)).orElse(sqlRequest);
+
+        return limit.map(integer -> sqlRequest + String.format(" LIMIT %s", integer))
+                .orElse(sqlRequest);
     }
 
     public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
