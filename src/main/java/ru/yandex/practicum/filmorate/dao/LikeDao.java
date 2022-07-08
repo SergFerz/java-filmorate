@@ -23,4 +23,10 @@ public interface LikeDao {
      *         пользователей, поставивших лайки этому фильму
      */
     Map<Long, Set<Long>> getLikesForFilteredFilms(Optional<Integer> genreId, Optional<Integer> year);
+
+    Map<Long, Set<Long>> getLikesForAllFilms();
+
+    Map<Long, Map<Long, Double>> buildDifferencesMatrix();
+
+    Set<Long> getLikesByFilmId(long filmId);
 }

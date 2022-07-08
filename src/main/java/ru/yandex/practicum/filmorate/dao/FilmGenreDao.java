@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.Map;
@@ -18,4 +19,12 @@ public interface FilmGenreDao {
      *         связанных с этим фильмом.
      */
     Map<Long, Set<Genre>> getGenresForFilteredFilms(Optional<Integer> genreId, Optional<Integer> year);
+
+    Map<Long, Set<Genre>> getGenresForAllFilms();
+
+    Set<Genre> getGenresByFilmId(Long filmId);
+
+    Set<Genre> updateGenresFilm(Film film);
+
+    Set<Genre> createGenresFilm(Film film);
 }

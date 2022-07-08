@@ -29,7 +29,6 @@ public class DirectorDaoImpl implements DirectorDao {
     public List<Director> getAllDirectors() {
         String sql = "SELECT * FROM directors";
         List<Director> directorList = jdbcTemplate.query(sql, (rs, rowNum) -> makeDirector(rs));
-        log.debug("Текущее количество directors: {}", directorList.size());
         return directorList;
     }
 
@@ -59,10 +58,8 @@ public class DirectorDaoImpl implements DirectorDao {
                     directorRows.getInt("id"),
                     directorRows.getString("name")
             );
-            log.info("Найден director: {} {}", director.getId(), director.getName());
             return Optional.of(director);
         } else {
-            log.info("director с идентификатором {} не найден.", id);
             return Optional.empty();
         }
     }

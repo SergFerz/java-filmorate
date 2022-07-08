@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.LikeDao;
 import ru.yandex.practicum.filmorate.model.Like;
@@ -56,6 +57,18 @@ public class LikeDaoImpl implements LikeDao {
         return likes;
     }
 
+    @Override
+    public Map<Long, Set<Long>> getLikesForAllFilms() {
+        Map<Long, Set<Long>> likes = new HashMap<>();
+        jdbcTemplate.query("SELECT * FROM likes", rs -> {
+            Long filmId = rs.getLong("film_id");
+            Set<Long> filmLikes = likes.getOrDefault(filmId, new HashSet<>());
+            filmLikes.add(rs.getLong("user_id"));
+            likes.put(filmId, filmLikes);
+        });
+        return likes;
+    }
+
     /**
      * Метод возвращает строку SQL запроса с учетом значения параметров genreId, year, limit.
      *
@@ -98,5 +111,34 @@ public class LikeDaoImpl implements LikeDao {
                         "FROM likes";
         }
         return sqlRequest;
+    }
+
+    @Override
+    public Map<Long, Map<Long, Double>> buildDifferencesMatrix() {
+        Map<Long, Map<Long, Double>> data = new HashMap<>();
+        HashMap<Long, Double> films = new HashMap<>();
+        SqlRowSet likeRows = jdbcTemplate.queryForRowSet("SELECT * FROM likes");
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT film_id FROM likes group by film_id");
+        while (filmRows.next()) {
+            films.put(filmRows.getLong("film_id"), 0.0);
+        }
+        while (likeRows.next()) {
+            if (!data.containsKey(likeRows.getLong("user_id"))) {
+                data.put(likeRows.getLong("user_id"), new HashMap<>(films));
+            }
+            data.get(likeRows.getLong("user_id")).put(likeRows.getLong("film_id"), 1.0);
+        }
+        return data;
+    }
+
+    @Override
+    public Set<Long> getLikesByFilmId(long filmId) {
+        Set<Long> likes = new HashSet<>();
+        SqlRowSet likeRows = jdbcTemplate.queryForRowSet("SELECT * FROM likes WHERE film_id=?",
+                filmId);
+        if (likeRows.next()) {
+            likes.add(likeRows.getLong("user_id"));
+        }
+        return likes;
     }
 }

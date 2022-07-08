@@ -9,14 +9,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.DirectorDao;
-import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 @Component
@@ -24,14 +20,10 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 @Slf4j
 public class FilmDbStorage implements FilmStorage{
     private final JdbcTemplate jdbcTemplate;
-    private final GenreDao genreDao;
-    private final DirectorDao directorDao;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, GenreDao genreDao, DirectorDao directorDao) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.genreDao = genreDao;
-        this.directorDao = directorDao;
     }
 
     @Override
@@ -58,19 +50,8 @@ public class FilmDbStorage implements FilmStorage{
                 .addValue("rate", film.getRate())
                 .addValue("mpa_id", film.getMpa().getId());
         Number num = jdbcInsert.executeAndReturnKey(parameters);
-        if (film.getGenres() != null) {
-            film.getGenres().stream().
-                    forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
-                            num.longValue(), genre.getId()));
-        }
-        if (film.getDirectors() != null) {
-            film.getDirectors().stream()
-                    .forEach(director -> jdbcTemplate.update("INSERT INTO film_director(film_id, id) VALUES (?,?)",
-                            num.longValue(), director.getId()));
-        }
-        if (getFilmById(num.longValue()).isPresent()) {
-            return getFilmById(num.longValue()).get();
-        } else return null;
+        film.setId(num.longValue());
+        return film;
     }
 
     @Override
@@ -83,79 +64,36 @@ public class FilmDbStorage implements FilmStorage{
                 film.getRate(),
                 film.getMpa().getId(),
                 film.getId());
-        if (film.getDirectors() != null) {
-            jdbcTemplate.update("DELETE FROM film_director WHERE film_id=?", film.getId());
-            film.getDirectors().stream()
-                    .forEach(director -> jdbcTemplate.update("INSERT INTO film_director(film_id, id) VALUES (?,?)",
-                            film.getId(), director.getId()));
-        } else {
-            jdbcTemplate.update("DELETE FROM film_director WHERE film_id=?", film.getId());
-        }
-
-        if (film.getGenres() != null) {
-            jdbcTemplate.update("DELETE FROM film_genre WHERE film_id=?", film.getId());
-            film.getGenres().stream()
-                    .forEach(genre -> jdbcTemplate.update("INSERT INTO film_genre(film_id, id) VALUES (?,?);",
-                            film.getId(), genre.getId()));
-        }
         Film film1 = getFilmById(film.getId()).get();
-
-        if (film.getGenres() != null && (film1.getGenres() == null)) {
-            film1.setGenres(Collections.emptySet());
-        }
-        if (film.getDirectors() == null) {
-            film1.setDirectors(null);
-        }
         return film1;
     }
 
     @Override
-    public Optional<Film> getFilmById(long id) {
-        Set<Genre> genres = new HashSet<>();
-        SqlRowSet genreRows = jdbcTemplate.queryForRowSet("SELECT * FROM film_genre WHERE film_id=?", id);
-        while (genreRows.next()) {
-            genres.add(genreDao.getGenreById(genreRows.getInt("id")).get());
-        }
-        if (genres.isEmpty()) {
-            genres = null;
-        }
-
-        Set<Director> directors = new HashSet<>();
-        SqlRowSet directorRows = jdbcTemplate.queryForRowSet("SELECT * FROM film_director WHERE film_id=?", id);
-        while (directorRows.next()) {
-            directors.add(directorDao.getDirectorById(directorRows.getLong("id")).get());
-        }
-
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT * FROM films WHERE film_id = ?", id);
+    public Optional<Film> getFilmById(long filmId) {
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT f.film_id AS film_id, " +
+                "                                              f.name , " +
+                "                                              f.releaseDate AS rel_date, " +
+                "                                              f.description AS description, " +
+                "                                              f.duration AS duration, " +
+                "                                              f.rate AS rate, " +
+                "                                              m.id AS m_id, " +
+                "                                              m.name  AS  m_name  FROM  films  AS  f  " +
+                " LEFT JOIN mpa AS m ON f.mpa_id=m.id WHERE f.film_id=?", filmId);
         if (filmRows.next()) {
-            SqlRowSet mpaRow = jdbcTemplate.queryForRowSet("SELECT * FROM mpa WHERE id = ?",
-                    filmRows.getInt("mpa_id"));
-            mpaRow.next();
-            int mpaId = mpaRow.getInt("id");
-            String mpaName = mpaRow.getString("name");
-
-            SqlRowSet likeRows = jdbcTemplate.queryForRowSet("SELECT * FROM likes WHERE film_id=?",
-                    filmRows.getLong("film_id"));
-            Set<Long> likes = new HashSet<>();
-            if (likeRows.next()) {
-                likes.add(likeRows.getLong("user_id"));
-            }
             Film film = new Film(
-                    filmRows.getLong("film_id"),
-                    filmRows.getString("name"),
-                    filmRows.getDate("releaseDate").toLocalDate(),
-                    filmRows.getString("description"),
-                    filmRows.getInt("duration"),
-                    filmRows.getInt("rate"),
-                    new Mpa(mpaId, mpaName),
-                    genres,
-                    directors,
-                    likes
+                    filmRows.getLong(1),
+                    filmRows.getString(2),
+                    filmRows.getDate(3).toLocalDate(),
+                    filmRows.getString(4),
+                    filmRows.getInt(5),
+                    filmRows.getInt(6),
+                    new Mpa(filmRows.getInt(7), filmRows.getString(8)),
+                    null,
+                    null,
+                    null
             );
-            log.info("Найден фильм: {} {}", film.getId(), film.getName());
             return Optional.of(film);
         } else {
-            log.info("Фильм с идентификатором {} не найден.", id);
             return Optional.empty();
         }
     }
@@ -320,6 +258,6 @@ public class FilmDbStorage implements FilmStorage{
                             "JOIN directors AS d ON fd.id=d.id WHERE LOWER(d.name) LIKE ?",
                     ((rs, rowNum) -> getFilmById(rs.getLong("film_id")).get()), stringSearch));
         }
-        return  filmList;
+        return filmList;
     }
 }
